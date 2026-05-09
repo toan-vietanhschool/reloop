@@ -87,8 +87,11 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   // Mark cached top 20 stale via shared tag. Next 16 requires the second
-  // `profile` argument; "max" gives us stale-while-revalidate semantics so
-  // visitors keep seeing the previous snapshot while we re-prime below.
+  // argument to be a cacheLife profile name (string) — `"max"` keeps the
+  // previous snapshot serving while we re-prime below. The 60s ISR on the
+  // leaderboard page also handles freshness independently.
+  // Note: passing a CacheLifeConfig object here was the Next 15 RC pattern;
+  // current API is `(tag, profile: string | CacheLifeConfig)`.
   const { revalidateTag } = await import("next/cache")
   revalidateTag(CACHE_TAG, "max")
 

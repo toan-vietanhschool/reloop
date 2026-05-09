@@ -18,8 +18,24 @@ const PROTECTED_PATTERNS: RegExp[] = [
   /^\/admin(\/.*)?$/,
 ]
 
+// Routes where we additionally enforce banned_at. Excludes static, auth,
+// landing, and the /banned page itself so banned users can still see why.
+const APP_ROUTE_PATTERNS: RegExp[] = [
+  /^\/dashboard(\/.*)?$/,
+  /^\/scan(\/.*)?$/,
+  /^\/listings(\/.*)?$/,
+  /^\/profile(\/.*)?$/,
+  /^\/admin(\/.*)?$/,
+  /^\/leaderboard(\/.*)?$/,
+  /^\/marketplace(\/.*)?$/,
+]
+
 function isProtected(pathname: string): boolean {
   return PROTECTED_PATTERNS.some((re) => re.test(pathname))
+}
+
+function isAppRoute(pathname: string): boolean {
+  return APP_ROUTE_PATTERNS.some((re) => re.test(pathname))
 }
 
 export async function proxy(request: NextRequest) {
@@ -61,6 +77,24 @@ export async function proxy(request: NextRequest) {
     loginUrl.pathname = "/auth/login"
     loginUrl.searchParams.set("redirect", pathname)
     return NextResponse.redirect(loginUrl)
+  }
+
+  // Banned-user enforcement: only on app routes (skip static/landing/auth/
+  // /banned itself) to avoid an extra DB hit on every asset request.
+  if (user && isAppRoute(pathname) && pathname !== "/banned") {
+    const { data } = await supabase
+      .from("profiles")
+      .select("banned_at")
+      .eq("id", user.id)
+      .maybeSingle()
+
+    const profile = data as { banned_at: string | null } | null
+    if (profile?.banned_at) {
+      const bannedUrl = request.nextUrl.clone()
+      bannedUrl.pathname = "/banned"
+      bannedUrl.search = ""
+      return NextResponse.redirect(bannedUrl)
+    }
   }
 
   return response

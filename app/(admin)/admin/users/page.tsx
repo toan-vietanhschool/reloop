@@ -27,10 +27,12 @@ async function fetchFlaggedUsers(): Promise<FlaggedUser[]> {
   // aggregate in TS rather than a SQL `having` clause because the
   // PostgREST select API does not support HAVING directly. The data
   // volume during MVP demo is bounded (~30 listings) so this is cheap.
+  // AUDIT: capped at 500 for safety; replace with SQL view in T3 cleanup
   const { data: rejectedRows, error: listingsError } = await supabase
     .from("listings")
     .select("owner_id")
     .eq("moderation_passed", false)
+    .limit(500)
 
   if (listingsError || !rejectedRows) return []
 

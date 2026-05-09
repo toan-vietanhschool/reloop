@@ -53,7 +53,7 @@ See [REPO-BLUEPRINT.md](./REPO-BLUEPRINT.md) for full directory layout.
 
 1. User visits landing page (public)
 2. Click "Sign In" → OAuth (Google) or Email magic link (Supabase Auth)
-3. After auth, middleware redirects to `/app/dashboard`
+3. After auth, proxy (Next 16; formerly middleware) redirects to `/app/dashboard`
 4. JWT token stored in secure HttpOnly cookie (Supabase managed)
 5. Server Actions include auth context via `createServerClient()`
 6. RLS policies enforce row-level access (see below)

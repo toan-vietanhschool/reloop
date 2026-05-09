@@ -88,8 +88,7 @@ Route (app)                Revalidate  Expire
 
 ### Notes
 
-- `middleware.ts` deprecation warning persists (Next 16 prefers `proxy.ts`).
-  Functional, deferred — rename in Sprint 3 cleanup.
+- `middleware.ts` renamed to `proxy.ts` (Next 16 convention) — deprecation warning cleared.
 
 ---
 

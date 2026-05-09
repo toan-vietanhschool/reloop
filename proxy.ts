@@ -22,7 +22,7 @@ function isProtected(pathname: string): boolean {
   return PROTECTED_PATTERNS.some((re) => re.test(pathname))
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL

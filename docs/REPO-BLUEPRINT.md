@@ -134,7 +134,7 @@ Based on playbook Phan 3.2, adjusted for 20-issue scope. Tier 2 axes chosen: Ope
         ci.yml                         # Lint + typecheck + build + Playwright E2E [T2-06]
         preview.yml                    # Vercel preview on PR [T1-01]
       PULL_REQUEST_TEMPLATE.md         # What / Why / AI prompts used / Manual changes
-    middleware.ts                      # supabase/ssr session refresh [T1-03, T1-07]
+    proxy.ts                           # supabase/ssr session refresh [T1-03, T1-07] (renamed from middleware.ts for Next 16)
     next.config.ts                     # Images domains, Sentry plugin, bundle analyzer [T1-01]
     tailwind.config.ts                 # Custom eco color palette, font stack [T1-04]
     components.json                    # shadcn/ui config [T1-01]
@@ -257,9 +257,9 @@ Wave 3 Agent W3-A executes these steps in order:
 
 | Issue | Files Created | Files Modified |
 |-------|--------------|----------------|
-| T1-01 Setup repo + Supabase + Vercel + GH Actions | package.json, next.config.ts, tailwind.config.ts, tsconfig.json, components.json, .env.local, .env.example, middleware.ts stub, .github/workflows/preview.yml, app/layout.tsx, README.md | none new repo |
+| T1-01 Setup repo + Supabase + Vercel + GH Actions | package.json, next.config.ts, tailwind.config.ts, tsconfig.json, components.json, .env.local, .env.example, proxy.ts stub (Next 16; was middleware.ts), .github/workflows/preview.yml, app/layout.tsx, README.md | none new repo |
 | T1-02 Migration 0001_init.sql 14 tables + RLS + triggers | supabase/migrations/0001_init.sql, supabase/seed.sql, types/database.types.ts | none |
-| T1-03 Auth Supabase magic link + Google OAuth + profile | app/auth/login/page.tsx, app/auth/callback/route.ts, app/(app)/layout.tsx, lib/supabase/client.ts, lib/supabase/server.ts, lib/supabase/admin.ts, lib/validators/profile.ts, components/shared/Navbar.tsx, components/onboarding/WelcomeModal.tsx, middleware.ts | app/layout.tsx add ThemeProvider + Navbar |
+| T1-03 Auth Supabase magic link + Google OAuth + profile | app/auth/login/page.tsx, app/auth/callback/route.ts, app/(app)/layout.tsx, lib/supabase/client.ts, lib/supabase/server.ts, lib/supabase/admin.ts, lib/validators/profile.ts, components/shared/Navbar.tsx, components/onboarding/WelcomeModal.tsx, proxy.ts (Next 16; was middleware.ts) | app/layout.tsx add ThemeProvider + Navbar |
 | T1-04 Landing page eco-themed + responsive mobile-first | app/(marketing)/layout.tsx, app/(marketing)/page.tsx, app/(marketing)/about/page.tsx, components/shared/Footer.tsx | tailwind.config.ts eco color palette, app/layout.tsx global styles |
 | T1-05 Listings CRUD Server Actions + Storage + AI moderation | app/(app)/listings/page.tsx, app/(app)/listings/new/page.tsx, app/(app)/listings/[id]/page.tsx, actions/listings.ts, lib/validators/listing.ts, lib/openai/moderate.ts, lib/openai/prompts.ts, app/api/ai/moderate/route.ts, components/listings/ListingCard.tsx, components/listings/ListingForm.tsx, components/listings/ListingGrid.tsx, components/listings/ListingDetail.tsx, components/listings/MaterialBadge.tsx | types/index.ts add Listing types |
 | T1-06 AI Vision Scan route + camera + cache + result card | app/(app)/scan/page.tsx, app/api/ai/analyze-image/route.ts, lib/openai/vision.ts, lib/validators/scan.ts, components/scan/CameraCapture.tsx, components/scan/ScanResult.tsx, components/scan/ScanHistory.tsx | lib/utils.ts add imageHashSha256, types/index.ts add ScanResult type |

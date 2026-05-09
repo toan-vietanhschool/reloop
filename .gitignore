@@ -50,3 +50,8 @@ docs/DEMO-CREDENTIALS.md
 .docs-temp/
 .preserve/
 .claude/
+
+# Cloudflare Workers / OpenNext
+.open-next/
+.wrangler/
+cloudflare-env.d.ts

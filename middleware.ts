@@ -38,7 +38,7 @@ function isAppRoute(pathname: string): boolean {
   return APP_ROUTE_PATTERNS.some((re) => re.test(pathname))
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request })
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL

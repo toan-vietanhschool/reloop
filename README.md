@@ -44,48 +44,60 @@ pnpm dev
 
 ## Project Status
 
-**Sprint 1 (Bán kết 16/5)** — 7 ngày từ 9/5 — **DONE**
+**Sprint 1 (Bán kết 16/5)** — 7 ngày từ 9/5 — **DONE** (shipped 2026-05-09)
 
 | Ticket | Title                                              | Status |
 | ------ | -------------------------------------------------- | ------ |
-| T1-01  | Repo bootstrap + Next.js 15 scaffold               | ✅      |
-| T1-02  | Supabase schema + RLS                              | ✅      |
-| T1-03  | Auth (email + Google) + middleware                 | ✅      |
-| T1-04  | AI Vision Scan (GPT-4o-mini) + cache               | ✅      |
+| T1-01  | Repo bootstrap + Next.js 16 scaffold               | ✅      |
+| T1-02  | Supabase schema + RLS hardening                    | ✅      |
+| T1-03  | Auth (email + Google) + proxy middleware           | ✅      |
+| T1-04  | AI Vision Scan (GPT-4o-mini) + SHA256 cache        | ✅      |
 | T1-05  | Listings CRUD + photo upload + moderation hook     | ✅      |
-| T1-06  | Map (OSM + Leaflet) + 20 seeded points + crowdsource | ✅    |
-| T1-07  | Profile + Eco Points + Leaderboard                 | ✅      |
-| T1-08  | Admin moderation panel + RLS hardening             | ✅      |
-| T1-09  | Marketing landing + design polish                  | ✅      |
-| T1-10  | Polish + bug fixes + demo data + slide stub        | ✅      |
+| T1-06  | Map (OSM + Leaflet) + 25 seeded points + crowdsource | ✅    |
+| T1-07  | Profile + Eco Points badge + activity feed         | ✅      |
+| T1-08  | Eco-points RPC engine + level-up rewards           | ✅      |
+| T1-09  | Error boundaries + toasts + a11y polish            | ✅      |
+| T1-10  | Landing page (Vietnamese, eco-luxury) + demo data  | ✅      |
 
-Checkpoint: 16/5 14:00 UTC+7 (submit to BTC).
+**Status:** 10/10 issues shipped — See `docs/SPRINT-1-COMPLETE.md`  
+**Checkpoint:** 2026-05-09 (target 16/5 14:00 UTC+7 for Bán kết submission)
 
-**Demo URL placeholder:** <https://reloop-mvp.vercel.app/> (live after final
-Vercel deploy — see `docs/DEPLOYMENT.md`).
-
-**Sprint 2 (Chung kết 30/5)** — **DONE** (shipped 2026-05-10 in 1 day, 4-wave parallel agent execution)
+**Sprint 2 (Chung kết 30/5)** — **DONE** (shipped 2026-05-10 in 1 day, 4-wave parallel)
 
 | Ticket | Title                                              | Status |
 | ------ | -------------------------------------------------- | ------ |
 | T2-01  | Pin point + community verify (5-vote threshold)    | ✅      |
-| T2-02  | Leaderboard top 20 + school filter + cron daily    | ✅      |
-| T2-03  | Badges (5 unlocks + confetti + dialog modal)       | ✅      |
-| T2-04  | Admin moderation 3 tabs (listings/pins/users)      | ✅      |
-| T2-05  | GitHub Actions CI (5 jobs all green)               | ✅      |
-| T2-06  | Sentry integration (client/server/edge configs)    | ✅      |
-| T2-07  | PostHog analytics (11 custom events + dashboards)  | ✅      |
-| T2-08  | Share Eco Score 1080×1080 social cards             | ✅      |
-| T2-09  | Performance audit (ISR + bundle tuning)            | ✅      |
-| T2-10  | Pitch deck Chung kết + demo prep                   | ✅      |
+| T2-02  | Leaderboard top 20 + school filter + daily cron    | ✅      |
+| T2-03  | Badges system (5 unlocks + confetti + modal)       | ✅      |
+| T2-04  | Admin moderation 3 tabs (listings/pins/users) + ban | ✅      |
+| T2-05  | GitHub Actions CI (5 jobs: lint/typecheck/test/build/e2e) | ✅      |
+| T2-06  | Sentry integration (client/server/edge + monitoring) | ✅      |
+| T2-07  | PostHog analytics (11 events + 3 dashboards)       | ✅      |
+| T2-08  | Share Eco Score (1080×1080 OG cards + html-to-image) | ✅      |
+| T2-09  | Performance audit (ISR 5m, bundle analysis, prerender 12 pages) | ✅      |
+| T2-10  | Pitch deck Chung kết + Q&A prep (7 questions) + Plan B/C/D | ✅      |
 
-Checkpoint: 30/5 14:00 UTC+7 (submit final to BTC). See `docs/SPRINT-2-COMPLETE.md`.
+**Status:** 20/20 issues shipped — See `docs/SPRINT-2-COMPLETE.md`  
+**Checkpoint:** 2026-05-10 (target 30/5 14:00 UTC+7 for Chung kết submission)
+
+**Demo URL (pending Vercel deploy):** <https://reloop-mvp.vercel.app/> — See `docs/DEPLOYMENT.md` + manual user steps in Sprint 2 report
+
+## Documentation
+
+- **CHANGELOG.md** — Full release history (v0.1.0-bootstrap → v1.0.0-sprint-2) with commit mapping
+- **Sprint 1 Report** — `docs/SPRINT-1-COMPLETE.md` — 10/10 issues, RLS hardening, 92/100 rubric estimate
+- **Sprint 2 Report** — `docs/SPRINT-2-COMPLETE.md` — 10/10 issues, CI/CD + observability, 94/100 rubric estimate
+- **Sprint 3 Backlog** — `docs/SPRINT-3-BACKLOG.md` — 22 backlog items (tech debt, security, production readiness) with effort + priority
+- **Code Review** — Deferred items + tech debt from Sprint 2 security audit
+- **SQL Audit** — `docs/SQL-AUDIT.md` — RLS coverage (14/14 tables), 7 findings fixed
+- **RLS Test Plan** — `docs/RLS-TEST-PLAN.md` — 8 test cases for profile role, exchange, notification policies
+- **Deployment** — `docs/DEPLOYMENT.md` — Vercel (primary), Cloudflare Workers (known 500 error, workaround: pin Next 15.5.x)
 
 ## Resources
 
 - **Linear board**: [ReLoop MVP — TDTU Vibe Coding 2026](https://linear.app/truongvietanh/project/reloop-mvp-tdtu-vibe-coding-2026-cca1b358d64d)
-- **Playbook** (strategy + rubric): [Notion link to playbook]
-- **Production URL**: [vercel.app link — deployed 2026-05-10]
+- **GitHub repo**: https://github.com/toan-vietanhschool/reloop
+- **Supabase project**: https://supabase.com/dashboard/project/vzpwsdmlofsizhkwcpra (db schema + migrations)
 
 ## Contributing
 

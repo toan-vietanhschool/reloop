@@ -1,8 +1,10 @@
+import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { getCurrentProfile } from "@/actions/auth"
 import { ActivityItem } from "@/components/profile/ActivityItem"
+import { BadgeGrid } from "@/components/profile/BadgeGrid"
 import { EcoPointsBadge } from "@/components/profile/EcoPointsBadge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -93,10 +95,11 @@ export default async function ProfilePage() {
             aria-hidden
           >
             {profile.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={profile.avatar_url}
                 alt=""
+                width={96}
+                height={96}
                 className="h-full w-full object-cover"
               />
             ) : (
@@ -157,6 +160,10 @@ export default async function ProfilePage() {
         <StatCard label="Tổng listing" value={stats.listing_create} />
         <StatCard label="Tổng vote" value={stats.vote} />
       </section>
+
+      <div className="mb-8">
+        <BadgeGrid userId={profile.id} />
+      </div>
 
       <section aria-label="Hoạt động gần đây">
         <h2 className="mb-3 text-lg font-semibold tracking-tight">

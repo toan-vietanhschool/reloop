@@ -133,41 +133,44 @@ insert into public.material_info (
 on conflict (code) do nothing;
 
 -- =========== BADGES (5 rows — T2-03 acceptance criteria) ===========
+-- Realigned in T2-03 to: first_scan, plastic_hunter_10, map_contributor,
+-- generous_giver, eco_streak_7. Emoji icons render directly in
+-- BadgeGrid + BadgeUnlockDialog without an extra icon library lookup.
 insert into public.badges (code, name_vi, description, icon, points_required) values
   (
     'first_scan',
-    'Nhà Khoa Học Xanh',
-    'Hoàn thành lần quét AI đầu tiên để nhận diện vật liệu',
-    'scan',
+    'Lần Đầu Scan',
+    'Hoàn thành lần scan AI đầu tiên',
+    '🔍',
     0
   ),
   (
     'plastic_hunter_10',
     'Thợ Săn Nhựa',
-    'Đăng 10 mục nhựa lên ReLoop',
-    'target',
+    'Scan 10 món đồ nhựa (PET/HDPE/PP/PS/PVC)',
+    '♻️',
     50
-  ),
-  (
-    'eco_pioneer',
-    'Tiên Phong Xanh',
-    'Hoàn thành trao đổi đầu tiên thành công',
-    'award',
-    100
   ),
   (
     'map_contributor',
     'Người Lập Bản Đồ Xanh',
-    'Thêm 5 điểm thu gom vào bản đồ cộng đồng',
-    'map-pin',
+    'Pin 1 điểm thu gom được duyệt',
+    '📍',
     75
   ),
   (
-    'century_points',
-    'Anh Hùng Môi Trường',
-    'Tích lũy 100 eco points đầu tiên',
-    'star',
-    100
+    'generous_giver',
+    'Người Hào Phóng',
+    'Hoàn thành 5 listing cho/tặng',
+    '🎁',
+    0
+  ),
+  (
+    'eco_streak_7',
+    'Streak 7 Ngày',
+    '7 ngày liên tiếp có hành động eco',
+    '🔥',
+    0
   )
 on conflict (code) do nothing;
 

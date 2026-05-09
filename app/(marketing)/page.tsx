@@ -5,7 +5,7 @@ import { HeroSection } from "@/components/shared/HeroSection"
 import { PillarCard } from "@/components/shared/PillarCard"
 import { StatBlock } from "@/components/shared/StatBlock"
 
-export const revalidate = 60
+export const revalidate = 300
 
 const pillars = [
   {

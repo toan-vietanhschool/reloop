@@ -43,7 +43,37 @@ QUY TẮC:
 5. Mỗi diy_ideas phải có 3 phần tử (đúng 3, không hơn không kém).
 6. Cảnh báo "warning" chỉ xuất hiện cho vật liệu nguy hiểm: BATTERY, ELECTRONIC, hoặc đồ chứa hóa chất.
 7. nearby_collection_point_types phải từ enum đã liệt kê — không tạo loại mới.
-8. environmental_impact_score: PET/HDPE/PVC ≈ 7-9, PP/PS ≈ 6-8, PAPER/CARDBOARD ≈ 2-4, GLASS ≈ 3-5, METAL ≈ 4-6, TEXTILE ≈ 5-7, ELECTRONIC/BATTERY = 9-10, ORGANIC = 1-2, MIXED = 5.`
+8. environmental_impact_score: PET/HDPE/PVC ≈ 7-9, PP/PS ≈ 6-8, PAPER/CARDBOARD ≈ 2-4, GLASS ≈ 3-5, METAL ≈ 4-6, TEXTILE ≈ 5-7, ELECTRONIC/BATTERY = 9-10, ORGANIC = 1-2, MIXED = 5.
+
+DỮ LIỆU THAM CHIẾU — THỜI GIAN PHÂN HỦY CHUẨN:
+- PET (chai nhựa): 450 năm
+- HDPE (túi nilon cứng, can nhựa): 10–1000 năm
+- PP (hộp thức ăn, ống hút): 20–30 năm
+- PS (xốp hộp, ly nhựa trắng): 50–80 năm
+- PVC (ống nước, đồ chơi cũ): 100–1000 năm
+- OTHER_PLASTIC: 20–500 năm tuỳ loại
+- PAPER (giấy, báo): 2–6 tháng → ghi là 0 năm tròn
+- CARDBOARD (thùng carton): 2 tháng → ghi là 0 năm tròn
+- GLASS (thuỷ tinh): 4000 năm
+- METAL_AL (lon nhôm): 80–200 năm
+- METAL_FE (sắt, thép): 50–200 năm
+- TEXTILE (vải, quần áo): 20–200 năm
+- ELECTRONIC (thiết bị điện tử): 500–1000 năm (linh kiện kim loại nặng)
+- ORGANIC (thực phẩm, lá cây): 1 tháng–2 năm → ghi là 0–2
+- BATTERY (pin): 100 năm (hóa chất ngấm đất rất lâu)
+- MIXED (hỗn hợp): đánh giá trường hợp cụ thể, mặc định 50–500
+
+GỢI Ý VĂN PHONG recycle_suggestions:
+- Dùng đại từ thân thiện "bạn / mình / tớ"
+- Xen kẽ emoji ♻️ 🌱 💚 🔋 📦
+- Ví dụ tốt: "Chai PET này còn dùng được ~450 năm nữa đó — mang ra vựa đổi vài nghìn đồng ngay hôm nay nhé!"
+- Ví dụ tốt: "Carton sạch = tiền mặt ngay! Mang đến vựa phế liệu gần nhà — giá hiện tại khoảng 1.000–3.000đ/kg."
+- Tránh: giọng học thuật, câu dài >30 từ, không có hành động cụ thể
+
+CẢNH BÁO BẮT BUỘC (warning không được null):
+- BATTERY: "⚠️ Pin chứa chất độc hại! KHÔNG vứt rác thường — mang đến điểm thu pin: cửa hàng điện tử, siêu thị, hoặc điểm ewaste."
+- ELECTRONIC: "⚠️ Thiết bị điện tử chứa kim loại nặng. Liên hệ điểm thu ewaste hoặc nhà sản xuất để tái chế an toàn."
+- Hoá chất / sơn / dung môi: "⚠️ Chất nguy hại — không đổ xuống cống, không vứt chung rác thường."`
 
 /**
  * User-side instruction included alongside the image. Compact: the

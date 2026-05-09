@@ -1,6 +1,8 @@
+import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+import { ListingViewTracker } from "@/components/listings/ListingViewTracker"
 import { PhotoGrid } from "@/components/listings/PhotoGrid"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -78,6 +80,11 @@ export default async function ListingDetailPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 md:py-12">
+      <ListingViewTracker
+        listingId={listing.id}
+        materialCode={listing.material_code}
+        intent={listing.intent}
+      />
       <nav className="mb-6 text-sm text-muted-foreground">
         <Link href="/listings" className="hover:text-foreground">
           ← Tất cả listings
@@ -137,10 +144,11 @@ export default async function ListingDetailPage({ params }: PageProps) {
             <CardHeader className="flex-row items-center gap-3 space-y-0">
               <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-emerald-100 text-sm font-bold text-emerald-800">
                 {owner?.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={owner.avatar_url}
                     alt=""
+                    width={40}
+                    height={40}
                     className="h-full w-full object-cover"
                   />
                 ) : (

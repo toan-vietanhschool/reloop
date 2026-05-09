@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import {
   AlertTriangle,
+  Camera,
   CheckCircle2,
   Clock,
   Hammer,
@@ -10,7 +12,6 @@ import {
   MapPin,
   Recycle,
   Save,
-  Share2,
   XCircle,
 } from "lucide-react"
 
@@ -20,12 +21,26 @@ import { getMaterialMeta } from "@/lib/material"
 import { cn } from "@/lib/utils"
 import type { VisionResult } from "@/lib/openai/vision"
 
+import { ShareDialog } from "./ShareDialog"
+
 interface ResultCardProps {
   result: VisionResult
   imageUrl: string
   cached?: boolean
+  /**
+   * Optional legacy hook — invoked when the share dialog opens. Kept
+   * so existing callers (`ScanClient.handleShare`) can still trigger
+   * analytics or fallback toasts. The actual PNG/share logic lives in
+   * `<ShareDialog>` (T2-08).
+   */
   onShare?: () => void
   onSaveHistory?: () => void
+  /**
+   * Optional badge unlock chip surfaced on the share card. Wired by
+   * the parent (T2-03 BadgeUnlockDialog supplies the data via
+   * Realtime).
+   */
+  unlockedBadge?: { code: string; name_vi: string; icon?: string | null } | null
 }
 
 const COLLECTION_TYPE_LABEL: Record<string, string> = {
@@ -92,6 +107,7 @@ export function ResultCard({
   cached,
   onShare,
   onSaveHistory,
+  unlockedBadge,
 }: ResultCardProps) {
   const material = getMaterialMeta(result.material_code)
   const pun = ancestorPun(result.decomposition_years_min)
@@ -99,6 +115,12 @@ export function ResultCard({
     result.decomposition_years_min,
     result.decomposition_years_max,
   )
+  const [shareOpen, setShareOpen] = useState(false)
+
+  function openShareDialog() {
+    onShare?.()
+    setShareOpen(true)
+  }
 
   return (
     <Card className="mt-6 overflow-hidden">
@@ -287,12 +309,22 @@ export function ResultCard({
           </div>
         )}
 
-        {/* Action footer */}
+        {/* Action footer (T2-08 share dialog hooks in via openShareDialog). */}
         <div className="flex flex-col gap-2 border-t pt-4 sm:flex-row sm:flex-wrap">
+          <Button
+            type="button"
+            size="sm"
+            variant="default"
+            onClick={openShareDialog}
+            className="flex-1"
+          >
+            <Camera className="mr-2 size-4" />
+            Chia sẻ kết quả 📸
+          </Button>
           <Button
             asChild
             size="sm"
-            variant="default"
+            variant="outline"
             className="flex-1"
           >
             <Link
@@ -300,7 +332,7 @@ export function ResultCard({
                 result.material_code,
               )}&from=scan`}
             >
-              Đăng listing với vật liệu này
+              Đăng listing
             </Link>
           </Button>
           <Button
@@ -313,22 +345,20 @@ export function ResultCard({
             <Save className="mr-2 size-4" />
             Lưu vào lịch sử
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={onShare}
-            className="flex-1"
-          >
-            <Share2 className="mr-2 size-4" />
-            Chia sẻ
-          </Button>
         </div>
 
         <p className="text-center text-[11px] italic text-muted-foreground">
           Đây là dữ liệu tham khảo. Số liệu chuẩn từ Bộ TN&MT, OECD.
         </p>
       </CardContent>
+
+      <ShareDialog
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        result={result}
+        imageUrl={imageUrl}
+        unlockedBadge={unlockedBadge ?? null}
+      />
     </Card>
   )
 }

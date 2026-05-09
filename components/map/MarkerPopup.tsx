@@ -1,7 +1,8 @@
 "use client"
 
-import { Phone, ThumbsDown, ThumbsUp } from "lucide-react"
+import { Phone } from "lucide-react"
 
+import { VoteButtons } from "@/components/map/VoteButtons"
 import {
   pointTypeLabelVi,
   type CollectionPoint,
@@ -12,6 +13,7 @@ import {
 interface MarkerPopupProps {
   point: CollectionPoint
   categoriesByCode: Record<string, MaterialCategory>
+  isLoggedIn: boolean
 }
 
 function MaterialChip({
@@ -33,7 +35,11 @@ function MaterialChip({
   )
 }
 
-export function MarkerPopup({ point, categoriesByCode }: MarkerPopupProps) {
+export function MarkerPopup({
+  point,
+  categoriesByCode,
+  isLoggedIn,
+}: MarkerPopupProps) {
   return (
     <div className="min-w-[220px] max-w-[280px] space-y-2 text-sm">
       <div className="flex items-start justify-between gap-2">
@@ -44,7 +50,7 @@ export function MarkerPopup({ point, categoriesByCode }: MarkerPopupProps) {
           </span>
         ) : (
           <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800">
-            Chưa xác minh
+            Chưa xác thực
           </span>
         )}
       </div>
@@ -92,14 +98,12 @@ export function MarkerPopup({ point, categoriesByCode }: MarkerPopupProps) {
         </p>
       )}
 
-      <div className="flex items-center gap-3 border-t pt-2 text-[11px] text-muted-foreground">
-        <span className="inline-flex items-center gap-1">
-          <ThumbsUp className="h-3 w-3" aria-hidden /> {point.upvotes}
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <ThumbsDown className="h-3 w-3" aria-hidden /> {point.downvotes}
-        </span>
-      </div>
+      <VoteButtons
+        pointId={point.id}
+        upvotes={point.upvotes}
+        downvotes={point.downvotes}
+        isLoggedIn={isLoggedIn}
+      />
     </div>
   )
 }

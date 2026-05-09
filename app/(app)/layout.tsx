@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation"
 
-import { Header } from "@/components/shared/Header"
 import { getCurrentProfile } from "@/actions/auth"
+import { BadgeUnlockDialog } from "@/components/shared/BadgeUnlockDialog"
+import { Header } from "@/components/shared/Header"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function AppLayout({
@@ -24,6 +25,7 @@ export default async function AppLayout({
     <div className="flex min-h-screen flex-col">
       <Header profile={profile} />
       <div className="flex-1">{children}</div>
+      <BadgeUnlockDialog userId={user.id} />
     </div>
   )
 }

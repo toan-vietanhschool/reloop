@@ -25,11 +25,13 @@ const MapView = dynamic(() => import("@/components/map/MapView"), {
 interface MapPageClientProps {
   points: CollectionPoint[]
   categoriesByCode: Record<string, MaterialCategory>
+  isLoggedIn: boolean
 }
 
 export function MapPageClient({
   points,
   categoriesByCode,
+  isLoggedIn,
 }: MapPageClientProps) {
   const [enabledTypes, setEnabledTypes] = useState<Set<PointType>>(
     () => new Set<PointType>(POINT_TYPES),
@@ -84,6 +86,7 @@ export function MapPageClient({
           enabledTypes={enabledTypes}
           query={query}
           categoriesByCode={categoriesByCode}
+          isLoggedIn={isLoggedIn}
         />
 
         {/* Mobile filter trigger */}

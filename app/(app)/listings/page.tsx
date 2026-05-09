@@ -7,7 +7,7 @@ import type { Database } from "@/types/database.types"
 
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"]
 
-export const dynamic = "force-dynamic"
+export const revalidate = 120
 
 interface OwnerSummary {
   id: string

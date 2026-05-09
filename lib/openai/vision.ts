@@ -6,6 +6,7 @@ import OpenAI from "openai"
 import { z } from "zod"
 
 import { awardPoints } from "@/actions/points"
+import { trackServer } from "@/lib/analytics-server"
 import { POINTS } from "@/lib/points"
 import { createAdminClient } from "@/lib/supabase/admin"
 
@@ -348,19 +349,33 @@ export async function analyzeImage(
     return { data: null, cached: false, error: "invalid_image_url" }
   }
 
+  // scan_started — fire before any heavy work so we can compute funnel
+  // drop-off (started vs success) accurately.
+  void trackServer(userId, "scan_started", {})
+
   const imageHash = await hashImageBytes(imageUrl)
 
   // 1. Cache lookup (only when we successfully hashed the image).
   if (imageHash) {
     const cached = await findCachedByHash(imageHash)
     if (cached) {
+      void trackServer(userId, "scan_success", {
+        cached: true,
+        material_code: cached.result.material_code,
+      })
       return { data: cached.result, cached: true }
     }
   }
 
   // 2. No real key → fallback (no caching, no points awarded).
   if (!isApiKeyConfigured()) {
-    return { data: buildFallbackResult(), cached: false }
+    const fallback = buildFallbackResult()
+    void trackServer(userId, "scan_success", {
+      cached: false,
+      fallback: true,
+      material_code: fallback.material_code,
+    })
+    return { data: fallback, cached: false }
   }
 
   // 3. Real OpenAI call + persist.
@@ -393,10 +408,17 @@ export async function analyzeImage(
       }
     }
 
+    void trackServer(userId, "scan_success", {
+      cached: false,
+      fallback: false,
+      material_code: parsed.material_code,
+      confidence: parsed.confidence,
+    })
     return { data: parsed, cached: false }
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : "ai_unknown_error"
+    void trackServer(userId, "scan_failed", { reason: message })
     return { data: null, cached: false, error: message }
   }
 }

@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 import { signOut } from "@/actions/auth"
@@ -55,10 +56,11 @@ export function Header({ profile }: HeaderProps) {
                 aria-hidden
               >
                 {profile?.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={profile.avatar_url}
                     alt=""
+                    width={28}
+                    height={28}
                     className="h-full w-full object-cover"
                   />
                 ) : (

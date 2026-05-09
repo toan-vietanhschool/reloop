@@ -6,6 +6,7 @@ import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { track } from "@/lib/analytics"
 import { createClient as createBrowserSupabase } from "@/lib/supabase/client"
 import type { VisionResult } from "@/lib/openai/vision"
 
@@ -119,6 +120,14 @@ export function ScanClient() {
   async function handleShare() {
     if (!analysis) return
     const text = `Tớ vừa scan "${analysis.result.detected_item}" trên ReLoop — ${analysis.result.material_code}, phân hủy ~${analysis.result.decomposition_years_min} năm 🌱`
+    const hasNativeShare =
+      typeof navigator !== "undefined" && "share" in navigator
+    const platform = hasNativeShare ? "web_share_api" : "clipboard"
+    track("share_clicked", {
+      platform,
+      surface: "scan_result",
+      material_code: analysis.result.material_code,
+    })
     try {
       if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({ text, title: "ReLoop AI Scan" })

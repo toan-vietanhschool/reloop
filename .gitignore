@@ -49,3 +49,4 @@ test-results/
 docs/DEMO-CREDENTIALS.md
 .docs-temp/
 .preserve/
+.claude/

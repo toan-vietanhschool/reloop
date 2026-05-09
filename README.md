@@ -1,5 +1,7 @@
 # ReLoop — Shazam cho rác
 
+![CI](https://github.com/toan-vietanhschool/reloop/actions/workflows/ci.yml/badge.svg)
+
 > *Chụp một ảnh, biết ngay đồ này tái chế được không, đi đâu, hoặc ai đang cần.*
 
 **ReLoop** là nền tảng AI-first kết nối người muốn tái chế với cộng đồng và các điểm thu gom xác thực. Trong vòng 3 giây, bạn biết loại vật liệu, tác động sinh thái, ý tưởng DIY, và nơi vứt đúng chỗ. Hai luồng đồng thời: cho-tặng-trao đổi đồ còn dùng (C2C) + bán phế liệu (B2C) + map điểm thu gom crowdsourced.
@@ -62,8 +64,22 @@ Checkpoint: 16/5 14:00 UTC+7 (submit to BTC).
 **Demo URL placeholder:** <https://reloop-mvp.vercel.app/> (live after final
 Vercel deploy — see `docs/DEPLOYMENT.md`).
 
-**Sprint 2 (Chung kết 30/5)** — 14 ngày từ 17/5
-Scope: Chat 1-1 (Realtime), advanced moderation, Admin panel, analytics, performance tuning, production hardening.
+**Sprint 2 (Chung kết 30/5)** — **DONE** (shipped 2026-05-10 in 1 day, 4-wave parallel agent execution)
+
+| Ticket | Title                                              | Status |
+| ------ | -------------------------------------------------- | ------ |
+| T2-01  | Pin point + community verify (5-vote threshold)    | ✅      |
+| T2-02  | Leaderboard top 20 + school filter + cron daily    | ✅      |
+| T2-03  | Badges (5 unlocks + confetti + dialog modal)       | ✅      |
+| T2-04  | Admin moderation 3 tabs (listings/pins/users)      | ✅      |
+| T2-05  | GitHub Actions CI (5 jobs all green)               | ✅      |
+| T2-06  | Sentry integration (client/server/edge configs)    | ✅      |
+| T2-07  | PostHog analytics (11 custom events + dashboards)  | ✅      |
+| T2-08  | Share Eco Score 1080×1080 social cards             | ✅      |
+| T2-09  | Performance audit (ISR + bundle tuning)            | ✅      |
+| T2-10  | Pitch deck Chung kết + demo prep                   | ✅      |
+
+Checkpoint: 30/5 14:00 UTC+7 (submit final to BTC). See `docs/SPRINT-2-COMPLETE.md`.
 
 ## Resources
 

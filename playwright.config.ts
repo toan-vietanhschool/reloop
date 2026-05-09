@@ -16,7 +16,7 @@ export default defineConfig({
   ],
   use: {
     baseURL: BASE_URL,
-    trace: 'retain-on-failure',
+    trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
@@ -34,13 +34,13 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
   ],
-  // Start the Next.js dev server automatically when running locally
-  webServer: process.env.CI
-    ? undefined
-    : {
-        command: 'pnpm dev',
-        url: BASE_URL,
-        reuseExistingServer: true,
-        timeout: 120_000,
-      },
+  // Auto-start the Next.js server (locally: dev; CI: production build via `pnpm start`)
+  webServer: {
+    command: process.env.CI ? 'pnpm start' : 'pnpm dev',
+    url: BASE_URL,
+    reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
+    stdout: 'pipe',
+    stderr: 'pipe',
+  },
 })

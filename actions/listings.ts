@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 
 import { awardPoints } from "@/actions/points"
+import { trackServer } from "@/lib/analytics-server"
 import { POINTS } from "@/lib/points"
 import { moderateListing } from "@/lib/openai/moderate"
 import { createAdminClient } from "@/lib/supabase/admin"
@@ -245,9 +246,15 @@ export async function createListing(
     description: parsed.description,
   })
 
+  // Persist the AI moderation reason + timestamp so the admin
+  // moderation panel (T2-04) can display *why* content was flagged.
+  // `moderated_at` is distinct from `updated_at`: it tracks the
+  // moderation pass itself, not any later owner edit.
   const moderationUpdate: ListingUpdate = {
     photos: photoUrls,
     moderation_passed: moderation.safe,
+    moderation_reason: moderation.reason,
+    moderated_at: new Date().toISOString(),
   }
   // Use admin client for the moderation update because RLS policy
   // `listings_owner_update_safe_fields` (migration 0004) intentionally
@@ -280,6 +287,15 @@ export async function createListing(
       { skipRevalidate: true },
     )
   }
+
+  // listing_created — fire regardless of moderation outcome so the
+  // funnel still reflects creation intent. Best-effort.
+  void trackServer(user.id, "listing_created", {
+    listing_id: listingId,
+    material_code: parsed.material_code,
+    intent: parsed.intent,
+    moderation_passed: moderation.safe,
+  })
 
   revalidatePath("/listings")
   revalidatePath(`/listings/${listingId}`)

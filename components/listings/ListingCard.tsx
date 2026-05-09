@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -31,12 +32,12 @@ export function ListingCard({ listing, owner }: ListingCardProps) {
       <Card className="h-full overflow-hidden transition-shadow group-hover:shadow-md">
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
           {photo ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={photo}
               alt={listing.title}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-              loading="lazy"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
             />
           ) : (
             <div
@@ -69,10 +70,11 @@ export function ListingCard({ listing, owner }: ListingCardProps) {
           <div className="flex items-center gap-2 pt-1">
             <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-800">
               {owner?.avatar_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={owner.avatar_url}
                   alt=""
+                  width={24}
+                  height={24}
                   className="h-full w-full object-cover"
                 />
               ) : (

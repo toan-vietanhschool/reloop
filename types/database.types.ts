@@ -323,7 +323,9 @@ export type Database = {
           lat: number | null
           lng: number | null
           material_code: Database["public"]["Enums"]["material_code"]
+          moderated_at: string | null
           moderation_passed: boolean | null
+          moderation_reason: string | null
           owner_id: string
           photos: string[]
           status: Database["public"]["Enums"]["listing_status"]
@@ -342,7 +344,9 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           material_code: Database["public"]["Enums"]["material_code"]
+          moderated_at?: string | null
           moderation_passed?: boolean | null
+          moderation_reason?: string | null
           owner_id: string
           photos?: string[]
           status?: Database["public"]["Enums"]["listing_status"]
@@ -361,7 +365,9 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           material_code?: Database["public"]["Enums"]["material_code"]
+          moderated_at?: string | null
           moderation_passed?: boolean | null
+          moderation_reason?: string | null
           owner_id?: string
           photos?: string[]
           status?: Database["public"]["Enums"]["listing_status"]
@@ -527,6 +533,8 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          banned_at: string | null
+          banned_reason: string | null
           bio: string | null
           city: string | null
           created_at: string | null
@@ -535,10 +543,13 @@ export type Database = {
           id: string
           level: number
           role: Database["public"]["Enums"]["user_role"]
+          school: string | null
           updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string | null
@@ -547,10 +558,13 @@ export type Database = {
           id: string
           level?: number
           role?: Database["public"]["Enums"]["user_role"]
+          school?: string | null
           updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           bio?: string | null
           city?: string | null
           created_at?: string | null
@@ -559,7 +573,29 @@ export type Database = {
           id?: string
           level?: number
           role?: Database["public"]["Enums"]["user_role"]
+          school?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      schools: {
+        Row: {
+          city: string
+          code: string
+          created_at: string | null
+          name_vi: string
+        }
+        Insert: {
+          city: string
+          code: string
+          created_at?: string | null
+          name_vi: string
+        }
+        Update: {
+          city?: string
+          code?: string
+          created_at?: string | null
+          name_vi?: string
         }
         Relationships: []
       }
@@ -601,9 +637,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      earth: { Args: never; Returns: number }
+      check_and_award_badge: {
+        Args: { badge_code: string; uid: string }
+        Returns: boolean
+      }
       increment_points: {
-        Args: { uid: string; delta: number }
+        Args: { delta: number; uid: string }
         Returns: undefined
       }
       is_admin: { Args: never; Returns: boolean }

@@ -14,11 +14,11 @@ import {
 } from "react-leaflet"
 
 import { MarkerPopup } from "@/components/map/MarkerPopup"
+import { PinPointDialog } from "@/components/map/PinPointDialog"
 import { Button } from "@/components/ui/button"
 import {
   DEFAULT_ZOOM,
   HCM_CENTER,
-  colorForType,
   geolocate,
   pointTypeLabelVi,
   type CollectionPoint,
@@ -36,21 +36,46 @@ interface MapViewProps {
   enabledTypes: Set<PointType>
   query: string
   categoriesByCode: Record<string, MaterialCategory>
+  isLoggedIn: boolean
+}
+
+// Marker fill color is driven by `verified`:
+//   - verified  → emerald  (#16A34A) for trustworthy / admin-approved
+//   - unverified → amber   (#F59E0B) for community-contributed pending
+// Inner glyph still encodes type so users can scan map at a glance.
+const VERIFIED_COLOR = "#16A34A"
+const UNVERIFIED_COLOR = "#F59E0B"
+
+function typeGlyph(type: PointType): string {
+  switch (type) {
+    case "scrap_dealer":
+      return "S"
+    case "recycle_bin":
+      return "R"
+    case "ngo_dropoff":
+      return "N"
+    case "ewaste":
+      return "E"
+    case "other":
+    default:
+      return "•"
+  }
 }
 
 function buildMarkerIcon(type: PointType, verified: boolean): L.DivIcon {
-  const fill = colorForType(type)
-  const ring = verified ? "#16A34A" : "#F59E0B"
+  const color = verified ? VERIFIED_COLOR : UNVERIFIED_COLOR
+  const ring = verified ? "#065F46" : "#92400E"
+  const glyph = verified ? "&#10003;" : typeGlyph(type)
   const html = `
     <div style="position:relative;width:32px;height:40px;">
       <div style="
         width:32px;height:32px;border-radius:50%;
-        background:${fill};
+        background:${color};
         border:3px solid ${ring};
         box-shadow:0 2px 6px rgba(0,0,0,0.25);
         display:flex;align-items:center;justify-content:center;
-        color:white;font-size:14px;font-weight:600;">
-        ${verified ? "&#10003;" : "&middot;"}
+        color:white;font-size:14px;font-weight:700;">
+        ${glyph}
       </div>
       <div style="
         position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);
@@ -101,6 +126,7 @@ export default function MapView({
   enabledTypes,
   query,
   categoriesByCode,
+  isLoggedIn,
 }: MapViewProps) {
   const [userPos, setUserPos] = useState<LatLng | null>(null)
   const [geoError, setGeoError] = useState<string | null>(null)
@@ -171,6 +197,7 @@ export default function MapView({
               <MarkerPopup
                 point={point}
                 categoriesByCode={categoriesByCode}
+                isLoggedIn={isLoggedIn}
               />
             </Popup>
           </Marker>
@@ -190,6 +217,10 @@ export default function MapView({
       </MapContainer>
 
       <div className="pointer-events-none absolute right-3 top-3 z-[400] flex flex-col items-end gap-2">
+        <PinPointDialog
+          isLoggedIn={isLoggedIn}
+          defaultCenter={userPos ?? HCM_CENTER}
+        />
         <Button
           type="button"
           variant="default"

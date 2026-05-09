@@ -23,9 +23,21 @@
 
 ---
 
-## 2026-05-10 (T7) — Day 1
+## 2026-05-10 (T7) — Sprint 2 SHIP — Operations + Gamification + Admin
 
-**What:** [To be filled by Dev1 + Dev2]
+**What:** All 10 Tier 2 features shipped via 4-wave parallel execution. PostHog 11 events, GitHub Actions CI 5 jobs, Sentry full coverage, Badges 5 with confetti, Leaderboard top 20 + school filter, Admin moderation 3 tabs, Pin points + verify, Share Eco Score 1080x1080, Performance audit ISR-tuned.
+
+**AI prompts used:**
+- Wave 9: 3 parallel agents (Pin/Leaderboard/CI)
+- Wave 10: 3 parallel agents (Badges/Admin/Sentry)
+- Wave 11: 3 parallel agents (PostHog/Share/Performance)
+- Wave 12: final verify + pitch deck
+
+**Manual changes:** Renamed duplicate `0006_admin_audit.sql` → `0009_admin_audit.sql` to fix on-disk collision. Fixed Sentry v9 API. Build PASS 19 routes.
+
+**Blockers:** None. Project on ahead-of-schedule (6 days buffer to Bán kết 16/5).
+
+**Tomorrow:** Manual setup gates (Vercel deploy, OPENAI_API_KEY, Auth provider config). Live testing.
 
 ---
 

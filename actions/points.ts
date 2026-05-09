@@ -4,6 +4,7 @@ import "server-only"
 
 import { revalidatePath } from "next/cache"
 
+import { checkBadges, type BadgeNotification } from "@/actions/badges"
 import { ECO_ACTION_KINDS, type EcoActionKind } from "@/lib/points"
 import { createAdminClient } from "@/lib/supabase/admin"
 import type { Database } from "@/types/database.types"
@@ -13,6 +14,12 @@ type EcoActionInsert = Database["public"]["Tables"]["eco_actions"]["Insert"]
 export interface AwardPointsResult {
   data: { points: number; kind: EcoActionKind } | null
   error: string | null
+  /**
+   * Badges newly unlocked as a side-effect of this action. Empty in
+   * the common case. Callers can pass these straight into a UI surface
+   * (e.g. toast or `<BadgeUnlockDialog>`) without an extra fetch.
+   */
+  newBadges: BadgeNotification[]
 }
 
 interface AwardPointsOptions {
@@ -47,13 +54,13 @@ export async function awardPoints(
   options: AwardPointsOptions = {},
 ): Promise<AwardPointsResult> {
   if (!userId) {
-    return { data: null, error: "missing_user_id" }
+    return { data: null, error: "missing_user_id", newBadges: [] }
   }
   if (!ECO_ACTION_KINDS.includes(kind)) {
-    return { data: null, error: "invalid_kind" }
+    return { data: null, error: "invalid_kind", newBadges: [] }
   }
   if (!Number.isInteger(delta) || delta === 0) {
-    return { data: null, error: "invalid_delta" }
+    return { data: null, error: "invalid_delta", newBadges: [] }
   }
 
   const admin = createAdminClient()
@@ -71,7 +78,11 @@ export async function awardPoints(
     .insert(insertPayload as never)
 
   if (insertError) {
-    return { data: null, error: `eco_action_insert: ${insertError.message}` }
+    return {
+      data: null,
+      error: `eco_action_insert: ${insertError.message}`,
+      newBadges: [],
+    }
   }
 
   const { error: rpcError } = await admin.rpc("increment_points", {
@@ -80,8 +91,17 @@ export async function awardPoints(
   })
 
   if (rpcError) {
-    return { data: null, error: `increment_points: ${rpcError.message}` }
+    return {
+      data: null,
+      error: `increment_points: ${rpcError.message}`,
+      newBadges: [],
+    }
   }
+
+  // Re-evaluate badge rules for this trigger kind. Failures are logged
+  // upstream but never block the points award — earning points is the
+  // primary path; badges are a follow-on signal.
+  const badgeResult = await checkBadges(userId, kind)
 
   if (!options.skipRevalidate) {
     // Refresh header eco-points badge + profile page on next navigation.
@@ -89,5 +109,9 @@ export async function awardPoints(
     revalidatePath("/profile")
   }
 
-  return { data: { points: delta, kind }, error: null }
+  return {
+    data: { points: delta, kind },
+    error: null,
+    newBadges: badgeResult.newBadges,
+  }
 }

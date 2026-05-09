@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server"
 
+import { trackServer } from "@/lib/analytics-server"
 import { createClient } from "@/lib/supabase/server"
 
 export async function GET(request: NextRequest) {
@@ -21,12 +22,22 @@ export async function GET(request: NextRequest) {
   }
 
   const supabase = await createClient()
-  const { error } = await supabase.auth.exchangeCodeForSession(code)
+  const { data: exchanged, error } = await supabase.auth.exchangeCodeForSession(code)
 
   if (error) {
     const failure = new URL("/auth/login", origin)
     failure.searchParams.set("error", error.message)
     return NextResponse.redirect(failure)
+  }
+
+  // signup_completed: server-side fire on first OAuth code exchange.
+  // Best-effort — never blocks the redirect.
+  const sessionUser = exchanged?.user
+  if (sessionUser) {
+    const provider = sessionUser.app_metadata?.provider ?? "unknown"
+    void trackServer(sessionUser.id, "signup_completed", {
+      method: provider,
+    })
   }
 
   const redirectTarget = next.startsWith("/") ? next : "/dashboard"

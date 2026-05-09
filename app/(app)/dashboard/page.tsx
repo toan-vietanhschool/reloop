@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { SchoolPrompt } from "@/components/onboarding/SchoolPrompt"
 import {
   Card,
   CardContent,
@@ -8,6 +9,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { getCurrentProfile } from "@/actions/auth"
+import { createClient } from "@/lib/supabase/server"
+
+interface SchoolOption {
+  code: string
+  name_vi: string
+  city: string
+}
 
 const tiles = [
   {
@@ -34,8 +42,24 @@ export default async function DashboardPage() {
   const profile = await getCurrentProfile()
   const displayName = profile?.display_name ?? "bạn"
 
+  // Only fetch the schools list when we actually need to prompt — avoids an
+  // unnecessary round-trip for users who already picked a school.
+  const needsSchoolPrompt = profile !== null && profile.school === null
+  let schools: SchoolOption[] = []
+  if (needsSchoolPrompt) {
+    const supabase = await createClient()
+    const { data: rawSchools } = await supabase
+      .from("schools")
+      .select("code, name_vi, city")
+      .order("name_vi", { ascending: true })
+    schools = (rawSchools ?? []) as SchoolOption[]
+  }
+
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 md:py-12">
+      {needsSchoolPrompt && schools.length > 0 ? (
+        <SchoolPrompt schools={schools} />
+      ) : null}
       <header className="mb-8">
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
           Chào mừng, {displayName} 🌱

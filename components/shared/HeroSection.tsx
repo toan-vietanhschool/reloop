@@ -1,5 +1,4 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { HeroCta } from "@/components/shared/HeroCta"
 
 export function HeroSection() {
   return (
@@ -22,21 +21,12 @@ export function HeroSection() {
           Chụp 1 ảnh, biết tất cả: vật liệu, thời gian phân hủy, nơi tái chế gần nhất.
         </p>
         <div className="hero-fade-up hero-fade-up-3 flex flex-col gap-3 sm:flex-row sm:gap-4">
-          <Button
-            asChild
-            size="lg"
-            className="h-12 rounded-full bg-white px-7 text-base font-semibold text-brand-green-deep shadow-lg shadow-black/15 transition hover:bg-white/95 hover:shadow-xl"
-          >
-            <Link href="/scan">Bắt đầu Scan</Link>
-          </Button>
-          <Button
-            asChild
-            size="lg"
-            variant="outline"
-            className="h-12 rounded-full border-white/60 bg-white/0 px-7 text-base font-semibold text-white backdrop-blur transition hover:bg-white/15 hover:text-white"
-          >
-            <Link href="/map">Xem Map điểm tái chế</Link>
-          </Button>
+          <HeroCta href="/scan" cta="scan" variant="primary">
+            Bắt đầu Scan
+          </HeroCta>
+          <HeroCta href="/map" cta="map" variant="outline">
+            Xem Map điểm tái chế
+          </HeroCta>
         </div>
         <p className="hero-fade-up hero-fade-up-4 text-sm text-white/75">
           Miễn phí · Không cần tải app · Hoạt động trên mọi trình duyệt

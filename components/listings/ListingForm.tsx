@@ -283,7 +283,7 @@ export function ListingForm({ defaultCity }: ListingFormProps) {
                   onClick={() => removePhoto(photo.id)}
                   disabled={isSubmitting}
                   aria-label="Xóa ảnh"
-                  className="absolute right-1 top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-background/85 text-xs shadow hover:bg-destructive hover:text-destructive-foreground"
+                  className="absolute right-1 top-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-background/85 text-sm font-bold shadow hover:bg-destructive hover:text-destructive-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   ×
                 </button>

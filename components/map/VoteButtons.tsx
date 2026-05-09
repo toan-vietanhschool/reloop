@@ -118,14 +118,16 @@ export function VoteButtons({
         aria-label={upActive ? "Bỏ bình chọn ủng hộ" : "Bình chọn ủng hộ"}
         aria-pressed={upActive}
         className={cn(
-          "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium transition-colors",
+          // min-h-[24px] meets WCAG 2.5.8 Target Size (Minimum); the
+          // px-2.5 py-1.5 lift makes the actual hit area ~28px tall.
+          "inline-flex min-h-[24px] items-center gap-1 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           upActive
             ? "border-emerald-500 bg-emerald-50 text-emerald-800"
             : "border-input bg-background text-muted-foreground hover:bg-accent",
           (!isLoggedIn || isPending) && "cursor-not-allowed opacity-60",
         )}
       >
-        <ThumbsUp className="h-3 w-3" aria-hidden />
+        <ThumbsUp className="h-3.5 w-3.5" aria-hidden />
         {optimisticUp}
       </button>
       <button
@@ -135,14 +137,14 @@ export function VoteButtons({
         aria-label={downActive ? "Bỏ bình chọn không hữu ích" : "Bình chọn không hữu ích"}
         aria-pressed={downActive}
         className={cn(
-          "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-medium transition-colors",
+          "inline-flex min-h-[24px] items-center gap-1 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           downActive
             ? "border-rose-500 bg-rose-50 text-rose-800"
             : "border-input bg-background text-muted-foreground hover:bg-accent",
           (!isLoggedIn || isPending) && "cursor-not-allowed opacity-60",
         )}
       >
-        <ThumbsDown className="h-3 w-3" aria-hidden />
+        <ThumbsDown className="h-3.5 w-3.5" aria-hidden />
         {optimisticDown}
       </button>
       {!isLoggedIn && (

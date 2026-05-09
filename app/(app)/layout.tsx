@@ -24,7 +24,7 @@ export default async function AppLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <Header profile={profile} />
-      <div className="flex-1">{children}</div>
+      <div id="main-content" tabIndex={-1} className="flex-1">{children}</div>
       <BadgeUnlockDialog userId={user.id} />
     </div>
   )

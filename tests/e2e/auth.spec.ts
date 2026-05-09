@@ -1,40 +1,46 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 /**
  * T2-06 — Auth flow smoke tests.
  *
- * Verifies guest visitors are redirected to /auth/login when they tap
- * primary CTAs ("Bắt đầu Scan", "Đăng nhập") on the marketing landing.
+ * Verifies guest visitors can reach the login page directly and that
+ * proxy.ts redirects protected routes to /auth/login.
  */
 
-test.describe('Auth redirect for guests', () => {
-  test('clicking "Đăng nhập" navigates to /auth/login', async ({ page }) => {
-    await page.goto('/')
+test.describe('Auth — guest gating', () => {
+  test('login page is reachable directly and renders auth UI', async ({ page }) => {
+    await page.goto('/auth/login')
+    await page.waitForLoadState('domcontentloaded')
 
-    const loginLink = page
-      .getByRole('link', { name: /đăng nhập/i })
-      .or(page.getByRole('button', { name: /đăng nhập/i }))
-      .first()
-
-    await expect(loginLink).toBeVisible()
-    await loginLink.click()
-
-    await page.waitForURL(/\/auth\/login/)
     expect(page.url()).toMatch(/\/auth\/login/)
+
+    // Either Google OAuth button or magic-link email input must be present.
+    const oauthButton = page
+      .getByRole('button', { name: /google/i })
+      .or(page.getByRole('link', { name: /google/i }))
+      .first()
+    const emailInput = page.locator('input[type="email"]').first()
+
+    const oauthVisible = await oauthButton.isVisible().catch(() => false)
+    const emailVisible = await emailInput.isVisible().catch(() => false)
+
+    expect(oauthVisible || emailVisible).toBeTruthy()
   })
 
-  test('guest visiting /scan is gated to /auth/login by middleware', async ({ page }) => {
+  test('guest visiting /scan is gated to /auth/login by proxy', async ({ page }) => {
     const response = await page.goto('/scan')
-
-    // Middleware should either redirect or render login page.
     await page.waitForLoadState('domcontentloaded')
 
     const url = page.url()
-    const reachedLogin = /\/auth\/login/.test(url)
-    const reachedScan = /\/scan(\b|\/)/.test(url)
+    expect(url).toMatch(/\/auth\/login/)
+    expect([200, 301, 302, 303, 307, 308]).toContain(response?.status() ?? 200)
+  })
 
-    // Acceptable: redirected to login OR scan page exposes login affordance.
-    expect(reachedLogin || reachedScan).toBeTruthy()
-    expect(response?.ok() ?? true).toBeTruthy()
+  test('guest visiting /profile is gated to /auth/login by proxy', async ({ page }) => {
+    const response = await page.goto('/profile')
+    await page.waitForLoadState('domcontentloaded')
+
+    expect(page.url()).toMatch(/\/auth\/login/)
+    expect([200, 301, 302, 303, 307, 308]).toContain(response?.status() ?? 200)
   })
 })

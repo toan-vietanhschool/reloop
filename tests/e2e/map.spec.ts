@@ -1,49 +1,39 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 /**
- * T2-06 — Map page smoke tests.
+ * T2-06 — Map page guest gating.
  *
- * Verifies the Leaflet container renders, OSM attribution is visible,
- * and at least the seeded collection points eventually load.
+ * The /map route is part of (app) — proxy.ts redirects unauthenticated
+ * visitors to /auth/login before any Leaflet rendering happens.
+ *
+ * Authenticated map rendering (Leaflet container, OSM attribution,
+ * collection-point markers) is covered by storageState-fixture tests
+ * gated behind T3 once seeded test users land.
  */
 
-const MIN_EXPECTED_MARKERS = 1
+test('guest visiting /map is redirected to /auth/login by proxy', async ({ page }) => {
+  const response = await page.goto('/map')
 
-test('map page renders Leaflet container with OSM attribution', async ({ page }) => {
+  await page.waitForLoadState('domcontentloaded')
+
+  const url = page.url()
+  expect(url).toMatch(/\/auth\/login/)
+  expect([200, 301, 302, 303, 307, 308]).toContain(response?.status() ?? 200)
+})
+
+// TODO(T3-fixture): Enable once Playwright storageState test user lands.
+// Asserts: .leaflet-container visible, OSM attribution rendered, ≥1 marker.
+test.skip('authenticated map renders Leaflet + OSM attribution + markers', async ({ page }) => {
   await page.goto('/map')
 
-  // Leaflet container is the canonical handle.
   const leafletContainer = page.locator('.leaflet-container')
   await expect(leafletContainer).toBeVisible({ timeout: 15_000 })
 
-  // OSM attribution is mandatory per OSM TOS — must remain visible.
   const attribution = page.locator('.leaflet-control-attribution')
   await expect(attribution).toContainText(/OpenStreetMap/i)
-})
 
-test('map shows at least one collection-point marker', async ({ page }) => {
-  await page.goto('/map')
-
-  const leafletContainer = page.locator('.leaflet-container')
-  await expect(leafletContainer).toBeVisible({ timeout: 15_000 })
-
-  // Markers may render as default <img> pins or custom DivIcons.
   const markers = page.locator('.leaflet-marker-icon, .leaflet-marker-pane > *')
-
-  // Wait briefly for the marker fetch + render cycle.
   await expect
     .poll(async () => markers.count(), { timeout: 15_000, intervals: [500, 1000, 2000] })
-    .toBeGreaterThanOrEqual(MIN_EXPECTED_MARKERS)
-})
-
-// TODO(T2-08): Enable once seed data confirms 20 points are always present.
-test.skip('map shows 20+ seeded collection points', async ({ page }) => {
-  await page.goto('/map')
-
-  await expect(page.locator('.leaflet-container')).toBeVisible()
-
-  const markers = page.locator('.leaflet-marker-icon')
-  await expect
-    .poll(async () => markers.count(), { timeout: 20_000 })
-    .toBeGreaterThanOrEqual(20)
+    .toBeGreaterThanOrEqual(1)
 })

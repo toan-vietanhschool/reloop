@@ -123,6 +123,63 @@
 
 ---
 
+## Câu hỏi nâng cao — BGK chuyên môn cao
+
+### Q11: "Bạn dùng Cloudflare hay Vercel? Tại sao?"
+
+**Script (≤ 30s):**
+
+> "Em dùng **cả hai — production trên Vercel, edge experiment trên Cloudflare Workers**.
+> Vercel là default cho Next.js — Server Components hoạt động tốt nhất, ISR ổn,
+> đã tích hợp PostHog + Sentry. Cloudflare Workers em deploy qua
+> `@opennextjs/cloudflare` adapter làm experiment cho edge global, nhưng có
+> **bug SSR** với một số route động — chưa fix kịp cho Bán kết nên hôm nay
+> demo trên Vercel. **Production URL** là `reloop-prod.vercel.app`,
+> Cloudflare URL `reloop.vibecode-academy.workers.dev` để BGK xem stack
+> đa-platform. Trade-off: Vercel cold start 200ms nhưng DX tốt; Cloudflare
+> 50ms cold start nhưng adapter chưa stable. Roadmap Q3: migrate sang
+> Cloudflare hoàn toàn khi adapter mature."
+
+---
+
+### Q12: "Migration RLS 0004 hardening — bạn audit gì?"
+
+**Script (≤ 30s):**
+
+> "Migration `0004_rls_hardening.sql` em làm 3 việc:
+> **(1) Default-deny** trên cả **14 bảng** — không có policy thì query fail,
+> không phải fallback open;
+> **(2) Service-role separation** — chỉ moderation logic + admin audit dùng
+> service-role key, expose qua server action chứ không client;
+> **(3) Anon write blocked** — anon role chỉ SELECT trên `material_info`
+> public, mọi INSERT/UPDATE/DELETE phải authenticated.
+> Em đã viết test trong `RLS-TEST-PLAN.md` — kiểm tra user A
+> không đọc được listing draft của user B, không update được points của
+> profile khác, không xoá scan của người khác. Chạy `pnpm test:rls` xanh.
+> Ngoài ra `0008_user_banned.sql` thêm flag để admin ban user mà không xoá
+> data — audit trail đi qua bảng `admin_audit` trong migration `0009`."
+
+---
+
+### Q13: "AI Vision Scan có hallucinate không? Test với bao nhiêu ảnh?"
+
+**Script (≤ 30s):**
+
+> "Có rủi ro hallucinate — em xử lý 3 lớp.
+> **(1) Test set 50 ảnh** đa vật liệu (PET, HDPE, PP, PVC, glass, paper,
+> nhôm, hỗn hợp). Accuracy đo bằng so sánh với ground truth labels —
+> đạt **~85%** đúng material code, ~92% đúng trong "tái chế được hay không".
+> Sai chủ yếu ở PVC vs PETG (cả hai đều trong suốt) và HDPE đục vs PP.
+> **(2) Schema validation** — response phải match Zod schema, có
+> `confidence_score` < 0.7 thì UI hiện badge **'Cần xác nhận'**, không
+> auto-cộng Eco Points.
+> **(3) Bảng `material_info`** seed 30 dòng từ Bộ TN&MT là **source of truth**
+> — AI chỉ bổ sung DIY ideas, không override material data. User báo sai
+> qua nút 'Báo sai' → log vào `ai_analyses.user_feedback` để retrain prompt.
+> `temperature=0.2`, prompt versioning trong code, mỗi version có A/B test."
+
+---
+
 ## Practice script trước Chung kết
 
 1. Đọc to từng câu trả lời 5 lần (ghi âm + nghe lại)

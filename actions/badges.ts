@@ -109,7 +109,6 @@ export async function checkBadges(
       .from("notifications")
       .insert(notificationPayload as never)
     if (notifError) {
-      // eslint-disable-next-line no-console
       console.warn("notifications.insert failed:", notifError.message)
     }
   }

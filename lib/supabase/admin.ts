@@ -8,6 +8,12 @@ import type { Database } from "@/types/database.types"
  * Admin client with service_role key. SERVER-ONLY.
  * Bypasses Row Level Security — use only inside trusted server actions
  * or route handlers, never in client components.
+ *
+ * Throws at construction time if env vars are missing. We deliberately do
+ * NOT fall back to placeholder values for the service-role key: a silent
+ * placeholder would let privileged calls execute against an unintended
+ * target. Build-time prerender does not call `createAdminClient()`, so
+ * tolerance is unnecessary here.
  */
 export function createAdminClient() {
   if (typeof window !== "undefined") {

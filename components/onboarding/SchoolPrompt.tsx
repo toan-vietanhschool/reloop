@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 
 import { setSchool } from "@/actions/profile"
@@ -19,25 +19,29 @@ interface SchoolPromptProps {
 
 const SKIP_KEY = "reloop:schoolPrompt:skipped"
 
+/**
+ * Resolve the initial open state synchronously from sessionStorage. Runs
+ * only on the client (the function is invoked lazily by useState, but
+ * we still guard against SSR by checking `window`). Computing the state
+ * during render — not inside useEffect — avoids the cascading render
+ * that the react-hooks/set-state-in-effect rule warns about.
+ */
+function resolveInitialOpen(): boolean {
+  if (typeof window === "undefined") return false
+  try {
+    return window.sessionStorage.getItem(SKIP_KEY) !== "1"
+  } catch {
+    // sessionStorage may be unavailable (private mode); show prompt anyway.
+    return true
+  }
+}
+
 export function SchoolPrompt({ schools }: SchoolPromptProps) {
   const router = useRouter()
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState<boolean>(resolveInitialOpen)
   const [selected, setSelected] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
-
-  useEffect(() => {
-    // Respect a session-scoped skip flag set on previous "Bỏ qua".
-    try {
-      const skipped =
-        typeof window !== "undefined" &&
-        window.sessionStorage.getItem(SKIP_KEY) === "1"
-      if (!skipped) setOpen(true)
-    } catch {
-      // sessionStorage may be unavailable (private mode); show prompt anyway.
-      setOpen(true)
-    }
-  }, [])
 
   if (!open) return null
 

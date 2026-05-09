@@ -1,3 +1,7 @@
+packages:
+  - '.'
+
+# Allow native build scripts for these packages (pnpm 9+ security default blocks all)
 allowBuilds:
   '@sentry/cli': true
   core-js: true

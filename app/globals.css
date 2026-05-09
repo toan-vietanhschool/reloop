@@ -1,10 +1,18 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(98% 0 0);
   --foreground: oklch(0.145 0 0);
+  --brand-green: oklch(70% 0.18 160);
+  --brand-green-deep: oklch(48% 0.13 160);
+  --brand-blue: oklch(70% 0.18 220);
+  --brand-blue-deep: oklch(48% 0.13 220);
+  --eco-bg: oklch(98% 0 0);
+  --eco-bg-soft: oklch(96% 0.01 160);
+  --eco-on-dark: oklch(99% 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -67,10 +75,86 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-deep: var(--brand-green-deep);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-deep: var(--brand-blue-deep);
+  --color-eco-bg: var(--eco-bg);
+  --color-eco-bg-soft: var(--eco-bg-soft);
+  --color-eco-on-dark: var(--eco-on-dark);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --animate-hero-fade-up: hero-fade-up 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@theme {
+  --background-image-eco-hero-gradient: linear-gradient(
+    135deg,
+    oklch(70% 0.18 160) 0%,
+    oklch(70% 0.18 220) 100%
+  );
+  --background-image-eco-hero-grain: radial-gradient(
+    circle at 20% 30%,
+    oklch(99% 0 0 / 0.4),
+    transparent 60%
+  );
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.bg-eco-hero-gradient {
+  background-image: linear-gradient(
+    135deg,
+    oklch(70% 0.18 160) 0%,
+    oklch(70% 0.18 220) 100%
+  );
+}
+
+.bg-eco-hero-grain {
+  background-image:
+    radial-gradient(circle at 20% 30%, oklch(99% 0 0 / 0.5), transparent 55%),
+    radial-gradient(circle at 80% 70%, oklch(99% 0 0 / 0.35), transparent 55%);
+}
+
+.hero-fade-up {
+  animation: hero-fade-up 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-fade-up-2 {
+  animation-delay: 90ms;
+}
+
+.hero-fade-up-3 {
+  animation-delay: 180ms;
+}
+
+.hero-fade-up-4 {
+  animation-delay: 260ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-up,
+  .hero-fade-up-2,
+  .hero-fade-up-3,
+  .hero-fade-up-4 {
+    animation: none;
+  }
+}
+
+.font-display {
+  font-family: var(--font-display);
 }
 
 body {

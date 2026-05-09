@@ -80,7 +80,11 @@
 **M-4: profiles.role column updatable via user's own-update policy**
 - Risk: User could escalate role to 'admin' via UPDATE on own profile row.
 - Note: Mitigated by application layer (Server Actions guard role changes). Column-level RLS not supported natively in PostgreSQL.
-- Status: Deferred to T1-07 — add trigger to block role self-update, or move role to separate admin-only table.
+- Status: **RESOLVED in migration 0004_rls_hardening.sql (T1-07, 2026-05-09)**
+  - Dropped `profiles_update_own` (broad owner-update policy).
+  - Added `profiles_update_own_safe_fields`: WITH CHECK pins `role`, `eco_points`, and `level` to current committed values using correlated subselects.
+  - Added `admin_update_any_profile`: explicit admin-only policy for role promotion and point corrections.
+  - Also resolved listings.moderation_passed bypass (deferred item 4 from T1-07 list).
 
 ### LOW
 
@@ -125,14 +129,35 @@ Confirmed correct per Playbook §4.1 lines 280-283.
 
 ---
 
-## Deferred to T1-07
+## Deferred to T1-07 — Status After A8-1 Audit (2026-05-09)
 
-1. Two-user RLS behavior test (cannot statically audit — requires live Supabase instance).
-2. `is_admin()` runtime verification with actual admin/non-admin users.
-3. `profiles.role` self-escalation prevention (trigger or separate table).
-4. Column-level protection for `moderation_passed` on listings (currently updatable by owner).
-5. `exchanges → listings CASCADE` review — consider SET NULL to preserve exchange history.
-6. Rate limiting: not enforceable at SQL level — implement in Next.js middleware + Supabase Edge Functions (T1-07).
+1. Two-user RLS behavior test — **DOCUMENTED** in `docs/RLS-TEST-PLAN.md` with 12 curl-based scenarios. Requires 2 live signed-up users to execute. Cannot be run statically.
+2. `is_admin()` runtime verification — **DOCUMENTED** in test plan scenario 8 (admin promotes user) and scenario 9 (admin approves listing).
+3. `profiles.role` self-escalation prevention — **RESOLVED** in 0004 (see M-4 above).
+4. Column-level protection for `moderation_passed` on listings — **RESOLVED** in 0004. NOTE: introduces CA-1 regression in `createListing()` — see `docs/RLS-AUDIT-CODE.md`.
+5. `exchanges → listings CASCADE` review — **STILL DEFERRED**. Preserving exchange history on listing removal is a product decision. Recommend SET NULL in a future migration.
+6. Rate limiting — **PARTIALLY ADDRESSED**: `/api/ai/analyze-image` has in-memory rate limit (5 req/60s/user). Other endpoints unprotected. Full solution requires Upstash Redis or Supabase Edge Function middleware.
+
+## New Findings from T1-07 A8-1 Audit
+
+**CA-1 (HIGH): createListing() moderation update blocked by 0004**
+- File: `actions/listings.ts`, function `createListing()`
+- After 0004, the `listings_owner_update_safe_fields` policy blocks the server action from setting `moderation_passed = moderation.safe` because the update runs under the user's session (anon key + cookie) and the WITH CHECK pins `moderation_passed` to its current value.
+- Fix: use `createAdminClient()` for the post-moderation update step.
+- Status: FLAGGED — must fix before deploying 0004 to production.
+
+**CA-2 (LOW): vision.ts cache read justification undocumented**
+- File: `lib/openai/vision.ts`, `fetchCachedAnalysis()`
+- Admin client is justified (cross-user cache sharing) but the code comment does not explain this.
+- Status: NOTED — add inline documentation.
+
+## Migration Summary
+
+| Migration | Applied | Contents |
+|-----------|---------|----------|
+| 0001_init.sql | YES | Full schema + RLS (all 14 tables) |
+| 0003_points_rpc.sql | YES | `increment_points` RPC |
+| 0004_rls_hardening.sql | CREATED — PENDING apply | Profiles/listings RLS hardening, extension schema move |
 
 ---
 
@@ -153,9 +178,10 @@ Confirmed correct per Playbook §4.1 lines 280-283.
 
 ## Summary
 
-| Severity | Count | Fixed Inline | Deferred |
-|---|---|---|---|
-| CRITICAL | 2 | 2 | 0 |
-| HIGH | 4 | 4 | 0 |
-| MEDIUM | 4 | 3 | 1 |
-| LOW | 3 | 3 | 0 |
+| Severity | Count | Fixed Inline | Fixed 0004 | Deferred |
+|---|---|---|---|---|
+| CRITICAL | 2 | 2 | 0 | 0 |
+| HIGH | 4 | 4 | 0 | 0 |
+| MEDIUM | 4 | 3 | 1 | 0 |
+| LOW | 3 | 3 | 0 | 0 |
+| HIGH (new) | 1 | 0 | 0 | 1 (CA-1 in listings.ts) |

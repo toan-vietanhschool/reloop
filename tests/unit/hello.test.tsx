@@ -1,14 +1,20 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import HomePage from '@/app/page'
+import { HeroSection } from '@/components/shared/HeroSection'
 
 /**
- * T1-01 smoke test — RED until W3-A ships app/page.tsx with "ReLoop" text.
- * Green target: app/page.tsx renders an element matching /ReLoop/i.
+ * T1-01 smoke test — verifies landing hero renders with brand language.
+ * After T1-09 the marketing landing moved into app/(marketing)/page.tsx; route
+ * groups in the import path are awkward, so we test the HeroSection directly.
  */
-describe('HomePage (T1-01 smoke test)', () => {
-  it('renders ReLoop tagline', () => {
-    render(<HomePage />)
-    expect(screen.getByText(/ReLoop/i)).toBeInTheDocument()
+describe('HeroSection (T1-01 smoke test)', () => {
+  it('renders the Shazam cho rác tagline', () => {
+    render(<HeroSection />)
+    expect(screen.getByText(/Shazam cho rác/i)).toBeInTheDocument()
+  })
+
+  it('renders the primary Bắt đầu Scan CTA', () => {
+    render(<HeroSection />)
+    expect(screen.getByText(/Bắt đầu Scan/i)).toBeInTheDocument()
   })
 })

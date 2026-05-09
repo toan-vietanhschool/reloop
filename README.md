@@ -42,11 +42,27 @@ pnpm dev
 
 ## Project Status
 
-**Sprint 1 (Bán kết 16/5)** — 7 days from 9/5  
-Scope: Landing page, Auth (email + Google), Scan (AI Vision), Listings (CRUD + images), Map (OSM + crowdsource), Eco Points + Leaderboard, basic moderation.  
-Checkpoint: 16/5 14:00 UTC+7 (submit to BTC)
+**Sprint 1 (Bán kết 16/5)** — 7 ngày từ 9/5 — **DONE**
 
-**Sprint 2 (Chung kết 30/5)** — 14 days from 17/5  
+| Ticket | Title                                              | Status |
+| ------ | -------------------------------------------------- | ------ |
+| T1-01  | Repo bootstrap + Next.js 15 scaffold               | ✅      |
+| T1-02  | Supabase schema + RLS                              | ✅      |
+| T1-03  | Auth (email + Google) + middleware                 | ✅      |
+| T1-04  | AI Vision Scan (GPT-4o-mini) + cache               | ✅      |
+| T1-05  | Listings CRUD + photo upload + moderation hook     | ✅      |
+| T1-06  | Map (OSM + Leaflet) + 20 seeded points + crowdsource | ✅    |
+| T1-07  | Profile + Eco Points + Leaderboard                 | ✅      |
+| T1-08  | Admin moderation panel + RLS hardening             | ✅      |
+| T1-09  | Marketing landing + design polish                  | ✅      |
+| T1-10  | Polish + bug fixes + demo data + slide stub        | ✅      |
+
+Checkpoint: 16/5 14:00 UTC+7 (submit to BTC).
+
+**Demo URL placeholder:** <https://reloop-mvp.vercel.app/> (live after final
+Vercel deploy — see `docs/DEPLOYMENT.md`).
+
+**Sprint 2 (Chung kết 30/5)** — 14 ngày từ 17/5
 Scope: Chat 1-1 (Realtime), advanced moderation, Admin panel, analytics, performance tuning, production hardening.
 
 ## Resources

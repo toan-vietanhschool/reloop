@@ -1,6 +1,8 @@
+import type { Metadata } from "next"
+
 import { ScanClient } from "@/components/scan/ScanClient"
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "AI Vision Scan — ReLoop",
   description:
     "Chụp 1 ảnh, biết tất cả: vật liệu, thời gian phân hủy, ý tưởng DIY, nơi tái chế gần nhất.",

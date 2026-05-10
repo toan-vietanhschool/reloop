@@ -1,9 +1,14 @@
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 
 import { getCurrentProfile } from "@/actions/auth"
 import { ProfileEditForm } from "@/components/profile/ProfileEditForm"
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: "Sửa hồ sơ — ReLoop",
+}
 
 export default async function ProfileEditPage() {
   const profile = await getCurrentProfile()

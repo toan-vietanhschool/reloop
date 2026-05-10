@@ -351,6 +351,22 @@ export async function banUser(
     return { data: null, error: updateError.message }
   }
 
+  // Immediately revoke all of the banned user's sessions. Without this
+  // their existing JWT remains valid until expiry (up to 1 hour) and
+  // they could keep calling Server Actions during that window. signOut
+  // is best-effort: if it fails (network blip / Supabase 5xx), we still
+  // consider the ban applied — the row is what gates Phase 2 middleware.
+  try {
+    const adminClient = createAdminClient()
+    await adminClient.auth.admin.signOut(userId)
+  } catch (signOutError: unknown) {
+    const message =
+      signOutError instanceof Error ? signOutError.message : "unknown_error"
+    console.warn(
+      `[banUser] signOut failed for ${userId}; ban row applied but JWT may remain valid until expiry: ${message}`,
+    )
+  }
+
   await logAuditRow({
     kind: "admin_ban",
     adminId,

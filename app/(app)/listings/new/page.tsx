@@ -1,7 +1,13 @@
+import type { Metadata } from "next"
+
 import { ListingForm } from "@/components/listings/ListingForm"
 import { getCurrentProfile } from "@/actions/auth"
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: "Đăng tin mới — ReLoop",
+}
 
 export default async function NewListingPage() {
   const profile = await getCurrentProfile()

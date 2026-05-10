@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { ShieldAlert, UserX } from "lucide-react"
 
 import { AdminTabs } from "@/components/admin/AdminTabs"
@@ -5,7 +6,7 @@ import { BanUserButton } from "@/components/admin/BanUserButton"
 import { createClient } from "@/lib/supabase/server"
 import type { Database } from "@/types/database.types"
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Người dùng vi phạm — ReLoop Admin",
 }
 

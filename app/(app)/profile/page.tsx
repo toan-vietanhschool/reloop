@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -12,6 +13,10 @@ import { createClient } from "@/lib/supabase/server"
 import type { Database } from "@/types/database.types"
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: "Hồ sơ — ReLoop",
+}
 
 type EcoActionRow = Database["public"]["Tables"]["eco_actions"]["Row"]
 

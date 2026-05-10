@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 
 import { ListingCard } from "@/components/listings/ListingCard"
@@ -8,6 +9,10 @@ import type { Database } from "@/types/database.types"
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"]
 
 export const revalidate = 120
+
+export const metadata: Metadata = {
+  title: "Listings tái sinh — ReLoop",
+}
 
 interface OwnerSummary {
   id: string

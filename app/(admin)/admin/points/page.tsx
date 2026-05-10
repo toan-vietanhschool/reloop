@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { MapPin, ShieldCheck, ThumbsDown, ThumbsUp } from "lucide-react"
 
 import { verifyCollectionPoint } from "@/actions/collection-points"
@@ -10,8 +11,8 @@ import type {
   MaterialCode,
 } from "@/lib/map-utils"
 
-export const metadata = {
-  title: "Điểm chờ duyệt — ReLoop Admin",
+export const metadata: Metadata = {
+  title: "Điểm thu gom — ReLoop Admin",
 }
 
 interface PendingPointRow extends CollectionPoint {

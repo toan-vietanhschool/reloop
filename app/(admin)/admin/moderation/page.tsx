@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { ShieldCheck } from "lucide-react"
 
@@ -9,8 +10,8 @@ import {
 import { createClient } from "@/lib/supabase/server"
 import type { Database } from "@/types/database.types"
 
-export const metadata = {
-  title: "Kiểm duyệt bài đăng — ReLoop Admin",
+export const metadata: Metadata = {
+  title: "Kiểm duyệt — ReLoop Admin",
 }
 
 export const dynamic = "force-dynamic"

@@ -66,6 +66,10 @@ export function MapPageClient({
 
   return (
     <main className="relative flex h-[calc(100vh-3.5rem)] w-full overflow-hidden">
+      {/* Visually hidden page heading for screen readers — the visible
+          UI is map-driven and has no on-page H1. WCAG 2.4.6 (Headings
+          and Labels) and 1.3.1 (Info and Relationships). */}
+      <h1 className="sr-only">Bản đồ điểm thu gom</h1>
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:flex-shrink-0">
         <FilterSidebar

@@ -17,7 +17,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ReLoop — Shazam cho rác",
+  // Title template lets each page set its own title via `metadata.title`
+  // while keeping the unbranded marketing default for routes that don't
+  // override (e.g. landing). Pages set just their own short title:
+  //   export const metadata = { title: "Dashboard — ReLoop" }
+  // and the template (`%s`) renders it verbatim. Use `default` for any
+  // route that opts out of overriding.
+  title: {
+    template: "%s",
+    default: "ReLoop — Shazam cho rác",
+  },
   description:
     "Chụp 1 ảnh, biết tất cả: vật liệu, thời gian phân hủy, nơi tái chế gần nhất. AI Vision Scan cho rác Việt Nam.",
   applicationName: "ReLoop",

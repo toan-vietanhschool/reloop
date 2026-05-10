@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+
 import { Footer } from "@/components/shared/Footer"
 import { LeaderboardPodium } from "@/components/shared/LeaderboardPodium"
 import type { LeaderboardEntry } from "@/components/shared/LeaderboardPodium"
@@ -7,6 +9,10 @@ import type { SchoolOption } from "@/components/shared/SchoolFilter"
 import { createClient } from "@/lib/supabase/server"
 
 export const revalidate = 60
+
+export const metadata: Metadata = {
+  title: "Bảng xếp hạng — ReLoop",
+}
 
 interface SearchParamsShape {
   school?: string | string[]

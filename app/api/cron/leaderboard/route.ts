@@ -2,6 +2,7 @@ import { unstable_cache } from "next/cache"
 import { NextResponse } from "next/server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
+import { constantTimeEqual } from "@/lib/timing-safe-compare"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -82,7 +83,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   const authHeader = request.headers.get("authorization") ?? ""
-  if (authHeader !== `Bearer ${cronSecret}`) {
+  if (!constantTimeEqual(authHeader, `Bearer ${cronSecret}`)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 })
   }
 

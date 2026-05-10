@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 
 import { SchoolPrompt } from "@/components/onboarding/SchoolPrompt"
@@ -10,6 +11,10 @@ import {
 } from "@/components/ui/card"
 import { getCurrentProfile } from "@/actions/auth"
 import { createClient } from "@/lib/supabase/server"
+
+export const metadata: Metadata = {
+  title: "Dashboard — ReLoop",
+}
 
 interface SchoolOption {
   code: string

@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+
 import { MapPageClient } from "@/components/map/MapPageClient"
 import { createClient } from "@/lib/supabase/server"
 import type {
@@ -7,7 +9,7 @@ import type {
 
 export const revalidate = 300
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Bản đồ điểm thu gom — ReLoop",
   description: "Tìm vựa phế liệu, thùng tái chế, điểm e-waste gần bạn.",
 }

@@ -1,9 +1,8 @@
-import { timingSafeEqual } from "node:crypto"
-
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
 import { createAdminClient } from "@/lib/supabase/admin"
+import { constantTimeEqual } from "@/lib/timing-safe-compare"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -46,13 +45,6 @@ const PayloadSchema = z.union([
 ])
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-
-function constantTimeEqual(a: string, b: string): boolean {
-  const aBuf = Buffer.from(a, "utf8")
-  const bBuf = Buffer.from(b, "utf8")
-  if (aBuf.length !== bBuf.length) return false
-  return timingSafeEqual(aBuf, bBuf)
-}
 
 function authorize(request: Request): boolean {
   const expected = process.env.POSTHOG_WEBHOOK_SECRET

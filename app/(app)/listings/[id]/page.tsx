@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -28,6 +29,25 @@ export const dynamic = "force-dynamic"
 
 interface PageProps {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from("listings")
+    .select("title")
+    .eq("id", id)
+    .maybeSingle<{ title: string }>()
+  // Fallback when the listing is missing or RLS hides it from anon —
+  // the page itself will then 404 / strip private content. We never
+  // want to leak the unfound-id back into the title bar.
+  const title = data?.title?.trim()
+  return {
+    title: title ? `${title} — ReLoop` : "Listing — ReLoop",
+  }
 }
 
 export default async function ListingDetailPage({ params }: PageProps) {

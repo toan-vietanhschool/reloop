@@ -13,6 +13,8 @@
  */
 import * as Sentry from "@sentry/nextjs"
 
+import { scrubUserPII } from "@/lib/sentry-helpers"
+
 const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN
 const environment = process.env.VERCEL_ENV ?? "development"
 const release = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7)
@@ -38,16 +40,12 @@ if (dsn) {
     ],
 
     /**
-     * PII scrub. Drop email + IP before transport. Even though the Supabase
-     * client should not attach the user object directly, anything our own
-     * Sentry.setUser() calls might leak gets sanitized here as a safety net.
+     * PII scrub. The shared helper enforces an allowlist (id only) so
+     * any future custom user fields default to dropped instead of
+     * needing an explicit `delete` per field.
      */
     beforeSend(event) {
-      if (event.user) {
-        delete event.user.email
-        delete event.user.ip_address
-      }
-      return event
+      return scrubUserPII(event)
     },
   })
 }

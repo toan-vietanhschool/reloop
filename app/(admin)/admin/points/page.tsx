@@ -3,6 +3,7 @@ import { MapPin, ShieldCheck, ThumbsDown, ThumbsUp } from "lucide-react"
 
 import { verifyCollectionPoint } from "@/actions/collection-points"
 import { Button } from "@/components/ui/button"
+import { formatRelative } from "@/lib/format-relative"
 import { getMaterialMeta } from "@/lib/material"
 import { pointTypeLabelVi } from "@/lib/map-utils"
 import { createClient } from "@/lib/supabase/server"
@@ -17,27 +18,6 @@ export const metadata: Metadata = {
 
 interface PendingPointRow extends CollectionPoint {
   contributor_name: string | null
-}
-
-const RTF = new Intl.RelativeTimeFormat("vi", { numeric: "auto" })
-const REL_UNITS: Array<{ unit: Intl.RelativeTimeFormatUnit; ms: number }> = [
-  { unit: "year", ms: 365 * 24 * 60 * 60 * 1000 },
-  { unit: "month", ms: 30 * 24 * 60 * 60 * 1000 },
-  { unit: "day", ms: 24 * 60 * 60 * 1000 },
-  { unit: "hour", ms: 60 * 60 * 1000 },
-  { unit: "minute", ms: 60 * 1000 },
-  { unit: "second", ms: 1000 },
-]
-
-function formatRelative(iso: string | null): string {
-  if (!iso) return ""
-  const ts = new Date(iso).getTime()
-  if (Number.isNaN(ts)) return ""
-  const diff = ts - Date.now()
-  const abs = Math.abs(diff)
-  const unit = REL_UNITS.find((u) => abs >= u.ms) ?? REL_UNITS[REL_UNITS.length - 1]
-  const value = Math.round(diff / unit.ms)
-  return RTF.format(value, unit.unit)
 }
 
 async function fetchPendingPoints(): Promise<PendingPointRow[]> {

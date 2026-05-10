@@ -3,6 +3,7 @@
 import { forwardRef } from "react"
 
 import { getMaterialMeta } from "@/lib/material"
+import { impactEmoji, YEARS_PER_GENERATION } from "@/lib/scan-display"
 import type { VisionResult } from "@/lib/openai/vision"
 
 import { QRCode } from "./QRCode"
@@ -44,22 +45,19 @@ const COLORS = {
   badgeChip: "rgba(255, 255, 255, 0.92)",
 }
 
-function impactEmoji(score: number): string {
-  if (score <= 2) return "🌱"
-  if (score <= 4) return "🌿"
-  if (score <= 6) return "⚠️"
-  if (score <= 8) return "🚨"
-  return "🔥"
-}
-
 /**
  * Decomposition years → ancestor generations pun.
- * 25 years per generation, mirrors `ResultCard.tsx`.
+ *
+ * Note: the share card uses first-person voice ("ông cố tôi") to match
+ * the surrounding sentence the user is implicitly speaking. The shared
+ * `buildAncestorPun` helper in `lib/scan-display.ts` returns the
+ * second-person ("ông cố bạn") variant for in-app cards. Both share
+ * the same generation math via `YEARS_PER_GENERATION`.
  */
 function ancestorLine(min: number, max: number | null): string | null {
   const years = max ?? min
   if (years < 80) return null
-  const generations = Math.floor(years / 25)
+  const generations = Math.floor(years / YEARS_PER_GENERATION)
   if (generations < 4) return null
   return `Sống lâu hơn ông cố tôi ${generations} đời 🤯`
 }
@@ -71,7 +69,7 @@ function ancestorLine(min: number, max: number | null): string | null {
  */
 function buildHeadline(result: VisionResult): string {
   const years = result.decomposition_years_max ?? result.decomposition_years_min
-  const generations = Math.floor(years / 25)
+  const generations = Math.floor(years / YEARS_PER_GENERATION)
   if (generations >= 4) {
     return `Tôi vừa cứu Trái Đất khỏi ${result.detected_item} — sống lâu hơn ông cố tôi ${generations} đời 🤯`
   }

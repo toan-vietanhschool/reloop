@@ -1,5 +1,6 @@
 import { MapPin, Plus, ScanLine, Sparkles, ThumbsUp } from "lucide-react"
 
+import { formatRelative } from "@/lib/format-relative"
 import { ECO_ACTION_LABELS_VI, type EcoActionKind } from "@/lib/points"
 
 interface ActivityItemProps {
@@ -16,37 +17,14 @@ const KIND_ICONS: Record<EcoActionKind, typeof ScanLine> = {
   exchange_complete: Sparkles,
 }
 
-const RTF = new Intl.RelativeTimeFormat("vi", { numeric: "auto" })
-
-interface RelativeUnit {
-  unit: Intl.RelativeTimeFormatUnit
-  ms: number
-}
-
-const RELATIVE_UNITS: RelativeUnit[] = [
-  { unit: "year", ms: 365 * 24 * 60 * 60 * 1000 },
-  { unit: "month", ms: 30 * 24 * 60 * 60 * 1000 },
-  { unit: "day", ms: 24 * 60 * 60 * 1000 },
-  { unit: "hour", ms: 60 * 60 * 1000 },
-  { unit: "minute", ms: 60 * 1000 },
-  { unit: "second", ms: 1000 },
-]
-
-function formatRelative(createdAt: string | null): string {
-  if (!createdAt) return "—"
-  const created = new Date(createdAt).getTime()
-  if (Number.isNaN(created)) return "—"
-
-  const diffMs = created - Date.now()
-  const absDiff = Math.abs(diffMs)
-
-  for (const { unit, ms } of RELATIVE_UNITS) {
-    if (absDiff >= ms || unit === "second") {
-      const value = Math.round(diffMs / ms)
-      return RTF.format(value, unit)
-    }
-  }
-  return RTF.format(0, "second")
+/**
+ * Activity feed uses an em-dash placeholder when the timestamp is
+ * missing/invalid, whereas the shared `formatRelative` returns "" so
+ * it can be inlined into longer admin copy. We coerce here to keep the
+ * profile UI from collapsing the row height when a row has no date.
+ */
+function formatActivityTime(createdAt: string | null): string {
+  return formatRelative(createdAt) || "—"
 }
 
 function isKnownKind(kind: string): kind is EcoActionKind {
@@ -74,7 +52,7 @@ export function ActivityItem({
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium">{label}</p>
         <p className="text-xs text-muted-foreground">
-          {formatRelative(createdAt)}
+          {formatActivityTime(createdAt)}
         </p>
       </div>
       <span

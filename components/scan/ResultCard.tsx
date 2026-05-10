@@ -18,6 +18,11 @@ import {
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { getMaterialMeta } from "@/lib/material"
+import {
+  buildAncestorPun,
+  formatDecompositionRange,
+  impactEmoji,
+} from "@/lib/scan-display"
 import { cn } from "@/lib/utils"
 import type { VisionResult } from "@/lib/openai/vision"
 
@@ -63,35 +68,11 @@ const DIFFICULTY_CLASS: Record<string, string> = {
   hard: "bg-red-100 text-red-700",
 }
 
-function formatYears(min: number, max: number | null): string {
-  if (max && max > min) {
-    if (min < 1 && max < 1) return "Vài tháng"
-    return `${min} – ${max} năm`
-  }
-  if (min < 1) return "Vài tháng"
-  return `~${min} năm`
-}
-
-function impactEmoji(score: number): string {
-  if (score <= 2) return "🌱"
-  if (score <= 4) return "🌿"
-  if (score <= 6) return "⚠️"
-  if (score <= 8) return "🚨"
-  return "🔥"
-}
-
 function impactColor(score: number): string {
   if (score <= 3) return "bg-green-500"
   if (score <= 6) return "bg-amber-500"
   if (score <= 8) return "bg-orange-500"
   return "bg-red-500"
-}
-
-function ancestorPun(years: number): string | null {
-  if (years <= 80) return null
-  const generations = Math.floor(years / 25)
-  if (generations < 4) return null
-  return `Sống lâu hơn ông cố bạn ${generations} đời 😱`
 }
 
 function decompositionPercent(min: number, max: number | null): number {
@@ -110,7 +91,7 @@ export function ResultCard({
   unlockedBadge,
 }: ResultCardProps) {
   const material = getMaterialMeta(result.material_code)
-  const pun = ancestorPun(result.decomposition_years_min)
+  const pun = buildAncestorPun(result.decomposition_years_min)
   const decompPct = decompositionPercent(
     result.decomposition_years_min,
     result.decomposition_years_max,
@@ -186,7 +167,7 @@ export function ResultCard({
               Thời gian phân hủy
             </div>
             <p className="text-2xl font-bold">
-              {formatYears(
+              {formatDecompositionRange(
                 result.decomposition_years_min,
                 result.decomposition_years_max,
               )}

@@ -50,10 +50,12 @@ async function fetchFlaggedUsers(): Promise<FlaggedUser[]> {
 
   // Step 2: fetch profile details for the flagged ids in a single
   // round-trip. RLS already permits public read of profile fields.
+  // AUDIT A5: capped for safety; replace with SQL view in T3 cleanup
   const { data: profileRows, error: profilesError } = await supabase
     .from("profiles")
     .select("*")
     .in("id", flaggedIds)
+    .limit(500)
 
   if (profilesError || !profileRows) return []
 

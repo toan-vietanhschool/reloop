@@ -3,6 +3,7 @@
 import { Locate, MapPin, Plus, Sparkles, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react"
+import { createPortal } from "react-dom"
 import { toast } from "sonner"
 
 import { pinCollectionPoint } from "@/actions/collection-points"
@@ -234,7 +235,13 @@ function PinPointDialogBody({
     return `https://tile.openstreetmap.org/${z}/${xtile}/${ytile}.png`
   }, [state.lat, state.lng])
 
-  return (
+  // Render via portal to document.body so the modal escapes Leaflet's
+  // stacking context. MapView wraps Leaflet in a relative container with
+  // child panes that use transform during pan/zoom, which would otherwise
+  // trap a `position: fixed` modal as a containing block.
+  if (typeof document === "undefined") return null
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[1100] flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       role="dialog"
@@ -549,6 +556,7 @@ function PinPointDialogBody({
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

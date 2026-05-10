@@ -54,7 +54,22 @@ Print/save offline trước demo:
 
 ---
 
-## 4 · Sprint 3 backlog (post-Bán kết)
+## 4 · AI builder prompts (parallel prototyping)
+
+Cần build lại / prototype ở platform khác? 4 master prompts đã chuẩn bị sẵn:
+
+| Tool | File | Use case | Words |
+|---|---|---|---|
+| **Lovable.dev** | [docs/LOVABLE-PROMPT.md](docs/LOVABLE-PROMPT.md) | **Primary** — full-stack Sprint 1+2 với Supabase native | ~4500 |
+| **Bolt.new** | [docs/BOLT-PROMPT.md](docs/BOLT-PROMPT.md) | Alternative full-stack Sprint 1 only (iterative) | ~2870 |
+| **v0.dev** | [docs/V0-PROMPT.md](docs/V0-PROMPT.md) | Design-only — 5 components (Hero / ScanCard / Podium / EcoScoreCard / ModerationTable) | ~2770 |
+| **Comparison matrix** | [docs/AI-BUILDERS-MATRIX.md](docs/AI-BUILDERS-MATRIX.md) | Decision tree + Lovable+v0+Cursor recommended workflow | ~1710 |
+
+Recommended workflow: **v0.dev (visuals) → Lovable (full-stack) → Cursor (polish)**.
+
+---
+
+## 5 · Sprint 3 backlog (post-Bán kết)
 
 [docs/SPRINT-3-BACKLOG.md](docs/SPRINT-3-BACKLOG.md) — 22 items prioritized:
 
@@ -64,7 +79,7 @@ Print/save offline trước demo:
 
 ---
 
-## 5 · Known issues
+## 6 · Known issues
 
 | Issue | Severity | Workaround | Tracked |
 |---|---|---|---|
@@ -76,7 +91,7 @@ Print/save offline trước demo:
 
 ---
 
-## 6 · Architecture quick-ref
+## 7 · Architecture quick-ref
 
 - **Stack**: Next.js 16.2.6 + React 19.2.4 + Tailwind v4 + shadcn/ui + Supabase (Postgres + Auth + Storage + Realtime + RLS) + OpenAI GPT-4o-mini + Leaflet + OSM + PostHog + Sentry + Vercel Cron
 - **DB**: 14 tables, all RLS-enabled, 8 migrations applied
@@ -89,7 +104,7 @@ Full diagram: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ---
 
-## 7 · Resume next session
+## 8 · Resume next session
 
 ```
 @HANDOFF.md

@@ -1,9 +1,7 @@
 "use client"
 
 import { useRef } from "react"
-import { Camera, ImageIcon } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
+import { Camera, ImageIcon, Upload } from "lucide-react"
 
 interface CameraCaptureProps {
   onPick: (file: File) => void
@@ -11,9 +9,12 @@ interface CameraCaptureProps {
 }
 
 /**
- * Reusable camera/upload trigger. On mobile, the `capture` attribute
- * forces the rear camera; desktop browsers fall back to the file
- * picker. We intentionally accept exactly ONE file at a time.
+ * Reusable camera/upload trigger pair. On mobile, the `capture`
+ * attribute forces the rear camera; desktop browsers fall back to the
+ * file picker. We intentionally accept exactly ONE file at a time.
+ *
+ * Visual treatment matches the editorial CTAs used in `ScanClient` —
+ * surfaced cards with rings instead of plain buttons.
  */
 export function CameraCapture({ onPick, disabled }: CameraCaptureProps) {
   const cameraInputRef = useRef<HTMLInputElement>(null)
@@ -47,27 +48,80 @@ export function CameraCapture({ onPick, disabled }: CameraCaptureProps) {
         onChange={handleChange}
         disabled={disabled}
       />
-      <Button
-        type="button"
-        size="lg"
-        className="h-14 flex-1 text-base"
+      <CtaCard
+        accent="emerald"
+        label="Chụp ảnh"
+        hint="Camera trực tiếp"
+        icon={<Camera className="size-5" aria-hidden />}
+        disabled={disabled}
         onClick={() => cameraInputRef.current?.click()}
+      />
+      <CtaCard
+        accent="sky"
+        label="Chọn từ thư viện"
+        hint="Upload ảnh có sẵn"
+        icon={<ImageIcon className="size-5" aria-hidden />}
         disabled={disabled}
-      >
-        <Camera className="mr-2 size-5" />
-        Chụp ảnh
-      </Button>
-      <Button
-        type="button"
-        size="lg"
-        variant="outline"
-        className="h-14 flex-1 text-base"
         onClick={() => galleryInputRef.current?.click()}
-        disabled={disabled}
-      >
-        <ImageIcon className="mr-2 size-5" />
-        Chọn từ thư viện
-      </Button>
+      />
     </div>
+  )
+}
+
+interface CtaCardProps {
+  accent: "emerald" | "sky"
+  label: string
+  hint: string
+  icon: React.ReactNode
+  disabled?: boolean
+  onClick: () => void
+}
+
+const CTA_ACCENT: Record<
+  CtaCardProps["accent"],
+  { ring: string; iconBg: string; iconText: string; hover: string }
+> = {
+  emerald: {
+    ring: "ring-emerald-500/40 hover:ring-emerald-500/70",
+    iconBg: "bg-emerald-100",
+    iconText: "text-emerald-700",
+    hover: "hover:bg-emerald-50",
+  },
+  sky: {
+    ring: "ring-sky-500/40 hover:ring-sky-500/70",
+    iconBg: "bg-sky-100",
+    iconText: "text-sky-700",
+    hover: "hover:bg-sky-50",
+  },
+}
+
+function CtaCard({ accent, label, hint, icon, disabled, onClick }: CtaCardProps) {
+  const c = CTA_ACCENT[accent]
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`group flex flex-1 items-center gap-3 rounded-2xl bg-white px-4 py-3 text-left shadow-sm ring-1 transition-all hover:-translate-y-0.5 hover:shadow-soft-lg focus:outline-none focus-visible:ring-2 ${c.ring} ${c.hover} ${
+        disabled ? "pointer-events-none opacity-60" : ""
+      }`}
+    >
+      <span
+        aria-hidden
+        className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${c.iconBg} ${c.iconText} transition-transform group-hover:scale-105`}
+      >
+        {icon}
+      </span>
+      <span className="flex flex-col">
+        <span className="text-sm font-semibold tracking-tight">{label}</span>
+        <span className="text-[11px] text-muted-foreground">{hint}</span>
+      </span>
+      <span
+        aria-hidden
+        className="ml-auto inline-flex size-7 items-center justify-center rounded-full bg-foreground/5 text-muted-foreground transition-all group-hover:translate-x-1"
+      >
+        <Upload className="size-3.5" />
+      </span>
+    </button>
   )
 }

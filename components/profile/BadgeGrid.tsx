@@ -1,5 +1,6 @@
+import { Lock } from "lucide-react"
+
 import { getUserBadges, type BadgeWithStatus } from "@/actions/badges"
-import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 interface BadgeGridProps {
@@ -7,26 +8,58 @@ interface BadgeGridProps {
 }
 
 /**
- * Server component — renders the 5 spec'd badges as a responsive grid
- * (2x3 mobile, 5x1 desktop). Locked cells fade to grayscale and show a
- * `current/target` progress pill where the rule supplies one. Unlocked
- * cells light up with the badge's accent color and surface the
- * award timestamp on hover (via `title`).
+ * Server component — renders the 5 spec'd badges as a responsive grid.
+ *
+ * Design:
+ *   - Unlocked: full-color tile, glow ring, mini timestamp, hover lift.
+ *   - Locked: grayscale + lock chip + progress text underneath.
+ *   - Tooltip via `title` exposes description + criteria for keyboard
+ *     and pointer users alike.
  */
 export async function BadgeGrid({ userId }: BadgeGridProps) {
   const badges = await getUserBadges(userId)
   const unlockedCount = badges.filter((b) => b.unlocked).length
+  const ratio = badges.length === 0 ? 0 : unlockedCount / badges.length
 
   return (
-    <section aria-label="Huy hiệu" className="space-y-3">
-      <header className="flex items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold tracking-tight">
-          Huy hiệu của bạn
-        </h2>
-        <p className="text-xs text-muted-foreground">
-          {unlockedCount}/{badges.length} đã mở khóa
-        </p>
+    <section aria-label="Huy hiệu" className="space-y-4">
+      <header className="flex items-end justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700">
+            Thành tựu
+          </p>
+          <h2 className="mt-0.5 text-xl font-bold tracking-tight sm:text-2xl">
+            Huy hiệu của bạn
+          </h2>
+        </div>
+        <div className="text-right">
+          <p className="text-2xl font-extrabold tabular-nums text-foreground">
+            {unlockedCount}
+            <span className="text-base font-semibold text-muted-foreground">
+              /{badges.length}
+            </span>
+          </p>
+          <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+            đã mở khóa
+          </p>
+        </div>
       </header>
+
+      {/* Slim progress strip — visualises overall unlock rate. */}
+      <div
+        className="h-1.5 w-full overflow-hidden rounded-full bg-emerald-100"
+        role="progressbar"
+        aria-valuenow={Math.round(ratio * 100)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Tiến độ mở khóa huy hiệu"
+      >
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-sky-500 transition-[width] duration-700"
+          style={{ width: `${Math.round(ratio * 100)}%` }}
+        />
+      </div>
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {badges.map((badge) => (
           <BadgeCell key={badge.code} badge={badge} />
@@ -45,61 +78,78 @@ function BadgeCell({ badge }: BadgeCellProps) {
     badge
 
   const tooltip = unlocked
-    ? awardedAt
-      ? `Mở khóa ${formatAwardedDate(awardedAt)}`
-      : "Đã mở khóa"
-    : "Chưa đạt điều kiện"
+    ? `${description}${awardedAt ? ` — Mở khóa ${formatAwardedDate(awardedAt)}` : ""}`
+    : `${description}${progressLabel ? ` — ${progressLabel}` : ""}`
 
   return (
-    <Card
-      className={cn(
-        "relative overflow-hidden transition-all",
-        unlocked
-          ? "border-emerald-300 bg-gradient-to-br from-emerald-50 to-white shadow-sm"
-          : "border-border bg-muted/30",
-      )}
+    <article
       title={tooltip}
+      className={cn(
+        "group relative overflow-hidden rounded-2xl p-4 text-center shadow-sm ring-1 transition-all duration-300",
+        unlocked
+          ? "bg-gradient-to-br from-white via-emerald-50/80 to-sky-50/60 ring-emerald-300 hover:-translate-y-1 hover:shadow-soft-lg"
+          : "bg-muted/40 ring-border/60",
+      )}
     >
-      <CardContent className="flex flex-col items-center gap-2 p-4 text-center">
-        <span
-          className={cn(
-            "flex h-14 w-14 items-center justify-center rounded-full text-3xl transition-all",
-            unlocked
-              ? "bg-emerald-100 ring-2 ring-emerald-200"
-              : "bg-muted opacity-40 grayscale",
-          )}
+      {/* Glow halo for unlocked */}
+      {unlocked && (
+        <div
           aria-hidden
+          className="pointer-events-none absolute -inset-4 -z-0 rounded-full bg-emerald-300/30 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        />
+      )}
+
+      <div className="relative flex flex-col items-center gap-2">
+        <span
+          aria-hidden
+          className={cn(
+            "relative flex size-14 items-center justify-center rounded-2xl text-3xl transition-transform",
+            unlocked
+              ? "bg-emerald-100 ring-2 ring-emerald-300 group-hover:scale-110"
+              : "bg-muted opacity-50 grayscale",
+          )}
         >
           {icon}
+          {!unlocked && (
+            <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full bg-foreground text-white shadow">
+              <Lock className="size-2.5" aria-hidden />
+            </span>
+          )}
         </span>
+
         <h3
           className={cn(
-            "text-sm font-semibold leading-tight",
+            "text-sm font-bold leading-tight",
             unlocked ? "text-emerald-900" : "text-muted-foreground",
           )}
         >
           {name_vi}
         </h3>
+
         <p
           className={cn(
-            "text-[11px] leading-snug",
-            unlocked ? "text-emerald-700/80" : "text-muted-foreground",
+            "line-clamp-2 text-[11px] leading-snug",
+            unlocked ? "text-emerald-900/70" : "text-muted-foreground",
           )}
         >
           {description}
         </p>
-        {!unlocked && progressLabel ? (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+
+        {unlocked ? (
+          <span className="rounded-full bg-emerald-600/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-700">
+            {awardedAt ? formatAwardedDate(awardedAt) : "Đã mở khóa"}
+          </span>
+        ) : progressLabel ? (
+          <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
             {progressLabel}
           </span>
-        ) : null}
-        {unlocked ? (
-          <span className="rounded-full bg-emerald-600/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-700">
-            Đã mở khóa
+        ) : (
+          <span className="rounded-full bg-foreground/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Chưa đạt
           </span>
-        ) : null}
-      </CardContent>
-    </Card>
+        )}
+      </div>
+    </article>
   )
 }
 

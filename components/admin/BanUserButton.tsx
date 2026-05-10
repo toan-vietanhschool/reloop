@@ -1,7 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
-import { Ban } from "lucide-react"
+import { Ban, ShieldOff } from "lucide-react"
 import { toast } from "sonner"
 
 import { banUser } from "@/actions/admin"
@@ -59,10 +59,23 @@ export function BanUserButton({
       variant={alreadyBanned ? "outline" : "destructive"}
       disabled={isPending || alreadyBanned}
       onClick={handleClick}
-      className="h-8 px-3"
+      className={
+        alreadyBanned
+          ? "h-8 gap-1 border-rose-200 px-3 text-rose-700"
+          : "h-8 gap-1 px-3"
+      }
     >
-      <Ban className="h-3.5 w-3.5" aria-hidden />
-      {alreadyBanned ? "Đã cấm" : "Cấm"}
+      {alreadyBanned ? (
+        <>
+          <ShieldOff className="size-3.5" aria-hidden />
+          Đã cấm
+        </>
+      ) : (
+        <>
+          <Ban className="size-3.5" aria-hidden />
+          Cấm
+        </>
+      )}
     </Button>
   )
 }

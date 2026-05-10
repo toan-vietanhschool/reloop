@@ -88,6 +88,10 @@
   --radius-xl: calc(var(--radius) + 4px);
   --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --animate-hero-fade-up: hero-fade-up 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --shadow-soft-lg: 0 16px 40px -12px oklch(50% 0.05 200 / 0.18);
+  --shadow-brand: 0 8px 24px -8px oklch(70% 0.18 160 / 0.35);
+  --gradient-mesh: radial-gradient(at 20% 30%, oklch(70% 0.18 160 / 0.15) 0px, transparent 50%),
+                   radial-gradient(at 80% 70%, oklch(70% 0.18 220 / 0.15) 0px, transparent 50%);
 }
 
 @theme {
@@ -149,6 +153,80 @@
   .hero-fade-up-2,
   .hero-fade-up-3,
   .hero-fade-up-4 {
+    animation: none;
+  }
+}
+
+/* Marketing surface tokens — reusable visual primitives */
+.shadow-soft-lg {
+  box-shadow: 0 16px 40px -12px oklch(50% 0.05 200 / 0.18);
+}
+.shadow-brand {
+  box-shadow: 0 8px 24px -8px oklch(70% 0.18 160 / 0.35);
+}
+.bg-gradient-mesh {
+  background-image:
+    radial-gradient(at 20% 30%, oklch(70% 0.18 160 / 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 70%, oklch(70% 0.18 220 / 0.15) 0px, transparent 50%);
+}
+
+/* Editorial divider line — used between trust strip stats */
+.eco-divider-v {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    oklch(99% 0 0 / 0.4) 50%,
+    transparent 100%
+  );
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes scroll-cue {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes sparkle-orbit {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(2px, -3px) scale(1.15);
+    opacity: 1;
+  }
+}
+
+.float-slow {
+  animation: float-slow 4s ease-in-out infinite;
+}
+
+.scroll-cue {
+  animation: scroll-cue 2s ease-in-out infinite;
+}
+
+.sparkle-orbit {
+  animation: sparkle-orbit 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-slow,
+  .scroll-cue,
+  .sparkle-orbit {
     animation: none;
   }
 }

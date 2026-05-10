@@ -17,9 +17,6 @@ interface BulkActionBarProps {
  * Sticky toolbar surfaced above a moderation table when one or more
  * rows are selected. The bar only renders when at least one row is
  * checked, so the page layout doesn't shift on mount.
- *
- * Buttons are wired to action handlers passed from the parent; this
- * component is intentionally dumb — it does no fetch / mutation.
  */
 export function BulkActionBar({
   selectedCount,
@@ -37,11 +34,17 @@ export function BulkActionBar({
     <div
       role="region"
       aria-label="Thanh hành động hàng loạt"
-      className="sticky top-14 z-20 -mx-4 mb-3 flex flex-wrap items-center gap-3 border-y border-amber-300/70 bg-amber-100/95 px-4 py-2 text-sm shadow-sm backdrop-blur sm:mx-0 sm:rounded-lg sm:border"
+      className="sticky top-[7.25rem] z-20 -mx-4 mb-3 flex flex-wrap items-center gap-3 border-y border-amber-300/70 bg-gradient-to-r from-amber-100/95 to-amber-50/95 px-4 py-2.5 text-sm shadow-soft-lg backdrop-blur sm:mx-0 sm:rounded-2xl sm:border"
     >
-      <span className="font-medium text-amber-900">
-        Đã chọn {selectedCount}/{totalCount}
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="flex size-7 items-center justify-center rounded-full bg-amber-900 text-xs font-bold text-white shadow tabular-nums">
+          {selectedCount}
+        </span>
+        <span className="font-semibold text-amber-950">
+          được chọn{" "}
+          <span className="font-medium text-amber-700">/ {totalCount}</span>
+        </span>
+      </div>
 
       <div className="ml-auto flex flex-wrap items-center gap-2">
         <Button
@@ -50,10 +53,10 @@ export function BulkActionBar({
           variant="default"
           disabled={isPending}
           onClick={onApprove}
-          className="h-8 bg-emerald-600 hover:bg-emerald-700"
+          className="h-8 gap-1 bg-emerald-600 hover:bg-emerald-700"
         >
-          <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
-          Phê duyệt {selectedCount} đã chọn
+          <CheckCircle2 className="size-3.5" aria-hidden />
+          Phê duyệt {selectedCount}
         </Button>
 
         <Button
@@ -62,10 +65,10 @@ export function BulkActionBar({
           variant="destructive"
           disabled={isPending}
           onClick={onReject}
-          className="h-8"
+          className="h-8 gap-1"
         >
-          <XCircle className="h-3.5 w-3.5" aria-hidden />
-          Từ chối {selectedCount} đã chọn
+          <XCircle className="size-3.5" aria-hidden />
+          Từ chối {selectedCount}
         </Button>
 
         <Button
@@ -74,9 +77,9 @@ export function BulkActionBar({
           variant="ghost"
           disabled={isPending}
           onClick={onClear}
-          className="h-8 text-amber-900 hover:bg-amber-200/60"
+          className="h-8 gap-1 text-amber-900 hover:bg-amber-200/60"
         >
-          <X className="h-3.5 w-3.5" aria-hidden />
+          <X className="size-3.5" aria-hidden />
           Bỏ chọn
         </Button>
       </div>

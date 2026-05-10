@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Shield } from "lucide-react"
+import { ArrowLeft, ShieldCheck } from "lucide-react"
 
 import { signOut } from "@/actions/auth"
 import { UserBadge } from "@/components/shared/UserBadge"
@@ -19,25 +19,32 @@ export function AdminHeader({ profile }: AdminHeaderProps) {
   const displayName = profile.display_name ?? "Admin"
 
   return (
-    <header className="sticky top-0 z-30 w-full border-b border-amber-300/60 bg-amber-50/80 backdrop-blur supports-[backdrop-filter]:bg-amber-50/70">
+    <header className="sticky top-0 z-30 w-full border-b border-amber-300/70 bg-amber-50/85 backdrop-blur supports-[backdrop-filter]:bg-amber-50/70">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
         <Link
-          href="/admin/points"
-          className="flex items-center gap-2 text-base font-bold tracking-tight text-amber-900"
+          href="/admin/moderation"
+          className="group flex items-center gap-2 text-base font-extrabold tracking-tight text-amber-950"
         >
-          <Shield className="h-4 w-4" aria-hidden />
-          <span>ReLoop Admin</span>
+          <span className="flex size-7 items-center justify-center rounded-lg bg-amber-900 text-white shadow-sm transition-transform group-hover:rotate-3">
+            <ShieldCheck className="size-4" aria-hidden />
+          </span>
+          <span className="leading-none">
+            ReLoop{" "}
+            <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-amber-700">
+              Admin
+            </span>
+          </span>
         </Link>
 
         <nav
           aria-label="Admin"
-          className="hidden items-center gap-6 md:flex"
+          className="hidden items-center gap-1 md:flex"
         >
           {adminNav.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-amber-900/80 transition-colors hover:text-amber-950"
+              className="rounded-full px-3 py-1.5 text-sm font-semibold text-amber-900/80 transition-colors hover:bg-amber-100 hover:text-amber-950"
             >
               {link.label}
             </Link>
@@ -49,19 +56,20 @@ export function AdminHeader({ profile }: AdminHeaderProps) {
             ecoPoints={profile.eco_points}
             className="hidden sm:inline-flex"
           />
-          <span className="hidden text-sm text-amber-950 md:inline">
+          <span className="hidden text-sm font-medium text-amber-950 md:inline">
             {displayName}
           </span>
           <Link
             href="/dashboard"
-            className="text-xs font-medium text-amber-900 underline-offset-2 hover:underline"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-amber-900 underline-offset-2 hover:underline"
           >
+            <ArrowLeft className="size-3" aria-hidden />
             Về trang chính
           </Link>
           <form action={signOut}>
             <button
               type="submit"
-              className="rounded-md border border-amber-900/30 bg-white/60 px-2.5 py-1 text-xs font-medium text-amber-900 shadow-sm hover:bg-white"
+              className="rounded-full border border-amber-900/30 bg-white/70 px-3 py-1 text-xs font-semibold text-amber-900 shadow-sm transition-colors hover:bg-white"
             >
               Đăng xuất
             </button>
@@ -70,16 +78,16 @@ export function AdminHeader({ profile }: AdminHeaderProps) {
       </div>
 
       {/* Mobile nav */}
-      <div className="border-t border-amber-300/60 px-4 py-2 md:hidden">
+      <div className="border-t border-amber-300/70 px-4 py-2 md:hidden">
         <nav
           aria-label="Admin (mobile)"
-          className="flex items-center gap-4 overflow-x-auto"
+          className="flex items-center gap-1.5 overflow-x-auto"
         >
           {adminNav.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="whitespace-nowrap text-xs font-medium text-amber-900/80 transition-colors hover:text-amber-950"
+              className="whitespace-nowrap rounded-full bg-white/60 px-3 py-1.5 text-xs font-semibold text-amber-900 transition-colors hover:bg-white"
             >
               {link.label}
             </Link>

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react"
 import Link from "next/link"
+import { Recycle, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -77,83 +78,127 @@ export default function LoginPage() {
   }
 
   return (
-    <main
-      className="flex min-h-screen items-center justify-center px-4 py-12"
-      style={{
-        background:
-          "radial-gradient(circle at top left, oklch(0.93 0.08 145) 0%, oklch(0.98 0.02 145) 35%, oklch(1 0 0) 100%)",
-      }}
-    >
-      <Card className="w-full max-w-md border-emerald-100 shadow-xl">
-        <CardHeader className="text-center">
-          <Link
-            href="/"
-            className="mx-auto mb-2 inline-flex items-center gap-2 text-2xl font-bold tracking-tight"
-          >
-            <span aria-hidden>🌱</span>
-            <span>ReLoop</span>
-          </Link>
-          <CardTitle className="text-xl">Đăng nhập</CardTitle>
-          <CardDescription>
-            Quay vòng đồ cũ, nhận eco-points cho mỗi món tái sinh.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full h-11"
-            onClick={handleGoogleLogin}
-            disabled={isOAuthLoading || isSendingMagicLink}
-          >
-            <GoogleIcon />
-            {isOAuthLoading ? "Đang chuyển hướng..." : "Tiếp tục với Google"}
-          </Button>
+    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-eco-bg-soft px-4 py-12">
+      {/* Layered atmospheric mesh */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-gradient-mesh opacity-90"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 -z-10 h-[40rem] bg-[radial-gradient(circle_at_top,oklch(70%_0.18_160_/_0.18)_0px,transparent_60%)]"
+      />
+      {/* Subtle dot pattern */}
+      <div
+        aria-hidden
+        className="absolute inset-0 -z-10 opacity-[0.04] [background-image:radial-gradient(oklch(0.145_0_0)_1px,transparent_1px)] [background-size:24px_24px]"
+      />
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">hoặc</span>
-            </div>
-          </div>
+      <div className="flex w-full max-w-md flex-col items-center gap-6">
+        {/* Brand mark above card */}
+        <Link
+          href="/"
+          className="group inline-flex items-center gap-2.5 font-display text-2xl font-bold tracking-tight text-foreground"
+        >
+          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-brand-green/15 text-brand-green-deep ring-1 ring-brand-green/30 shadow-brand transition group-hover:scale-105">
+            <Recycle className="h-6 w-6" aria-hidden />
+          </span>
+          ReLoop
+        </Link>
 
-          <form onSubmit={handleMagicLink} className="space-y-3">
-            <div className="space-y-1.5">
-              <label
-                htmlFor="email"
-                className="text-sm font-medium text-foreground"
-              >
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                placeholder="ban@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isSendingMagicLink || isOAuthLoading}
-                className="h-11"
-              />
-            </div>
+        <Card className="w-full border-foreground/8 shadow-soft-lg">
+          <CardHeader className="text-center">
+            <span className="mx-auto mb-1 inline-flex items-center gap-1.5 rounded-full bg-brand-green/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-green-deep">
+              <Sparkles className="h-3 w-3" aria-hidden />
+              TDTU Vibe Coding 2026
+            </span>
+            <CardTitle className="font-display text-2xl font-bold tracking-tight">
+              Đăng nhập ReLoop
+            </CardTitle>
+            <CardDescription className="text-pretty text-base">
+              Quay vòng đồ cũ, nhận eco-points cho mỗi món tái sinh.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
             <Button
-              type="submit"
-              className="w-full h-11"
-              disabled={isSendingMagicLink || isOAuthLoading || !email}
+              type="button"
+              variant="outline"
+              className="h-12 w-full gap-3 border-foreground/15 text-base font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-foreground/25 hover:shadow-md"
+              onClick={handleGoogleLogin}
+              disabled={isOAuthLoading || isSendingMagicLink}
             >
-              {isSendingMagicLink ? "Đang gửi..." : "Gửi magic link"}
+              <GoogleIcon />
+              {isOAuthLoading ? "Đang chuyển hướng..." : "Tiếp tục với Google"}
             </Button>
-          </form>
 
-          <p className="text-center text-xs text-muted-foreground">
-            Bằng cách tiếp tục, bạn đồng ý với điều khoản dịch vụ của ReLoop.
-          </p>
-        </CardContent>
-      </Card>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase tracking-wider">
+                <span className="bg-card px-3 text-muted-foreground">
+                  hoặc dùng email
+                </span>
+              </div>
+            </div>
+
+            <form onSubmit={handleMagicLink} className="space-y-4">
+              <div className="space-y-2">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium text-foreground"
+                >
+                  Email của bạn
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="ban@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isSendingMagicLink || isOAuthLoading}
+                  className="h-12 text-base"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="h-12 w-full bg-brand-green-deep text-base font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-green-deep hover:shadow-brand"
+                disabled={isSendingMagicLink || isOAuthLoading || !email}
+              >
+                {isSendingMagicLink ? "Đang gửi..." : "Gửi magic link"}
+              </Button>
+            </form>
+
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
+              Bằng cách tiếp tục, bạn đồng ý với{" "}
+              <Link
+                href="/terms"
+                className="underline-offset-4 hover:text-foreground hover:underline"
+              >
+                điều khoản
+              </Link>{" "}
+              và{" "}
+              <Link
+                href="/privacy"
+                className="underline-offset-4 hover:text-foreground hover:underline"
+              >
+                quyền riêng tư
+              </Link>{" "}
+              của ReLoop.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Link
+          href="/"
+          className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        >
+          ← Quay về trang chủ
+        </Link>
+      </div>
     </main>
   )
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ShieldCheck } from "lucide-react"
+import { ArrowRight, ShieldCheck } from "lucide-react"
 
 import { AdminTabs } from "@/components/admin/AdminTabs"
 import {
@@ -85,9 +85,6 @@ async function fetchCounts(): Promise<CountSummary> {
       .from("collection_points")
       .select("id", { count: "exact", head: true })
       .eq("verified", false),
-    // Flagged users: count rows from a small lookup query. Reuse a
-    // server-side aggregate via a single fetch — we read all rejected
-    // listings and group in TS to avoid an RPC for MVP.
     supabase
       .from("listings")
       .select("owner_id")
@@ -137,28 +134,49 @@ export default async function AdminModerationPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-6">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <div>
-          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight">
-            <ShieldCheck className="h-5 w-5 text-amber-700" aria-hidden />
-            Kiểm duyệt
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Duyệt nội dung bị AI flag, xác minh điểm thu gom, theo dõi người
-            dùng vi phạm.
-          </p>
-        </div>
-        <Link
-          href="/admin/points"
-          className="hidden rounded-md border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-900 shadow-sm hover:bg-amber-50 sm:inline-flex"
-        >
-          Sang điểm thu gom →
-        </Link>
-      </div>
+      <PageHeading
+        eyebrow="Kiểm duyệt"
+        title="Bài đăng chờ duyệt"
+        description="Duyệt nội dung bị AI flag, xác minh điểm thu gom, theo dõi người dùng vi phạm."
+        meta={
+          <Link
+            href="/admin/points"
+            className="hidden items-center gap-1 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-sm hover:bg-amber-50 sm:inline-flex"
+          >
+            Sang điểm thu gom
+            <ArrowRight className="size-3" aria-hidden />
+          </Link>
+        }
+      />
 
       <AdminTabs tabs={tabs} activeHref={MODERATION_TAB_HREF} />
 
       <ModerationTable rows={rows} />
     </main>
+  )
+}
+
+interface PageHeadingProps {
+  eyebrow: string
+  title: string
+  description: string
+  meta?: React.ReactNode
+}
+
+function PageHeading({ eyebrow, title, description, meta }: PageHeadingProps) {
+  return (
+    <div className="mb-5 flex items-start justify-between gap-3">
+      <div>
+        <p className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700">
+          <ShieldCheck className="size-3" aria-hidden />
+          {eyebrow}
+        </p>
+        <h1 className="mt-1 text-2xl font-extrabold tracking-tight">{title}</h1>
+        <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+          {description}
+        </p>
+      </div>
+      {meta}
+    </div>
   )
 }

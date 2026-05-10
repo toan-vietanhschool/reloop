@@ -3,7 +3,7 @@
 import "leaflet/dist/leaflet.css"
 
 import L from "leaflet"
-import { Locate } from "lucide-react"
+import { Locate, AlertCircle } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import {
   MapContainer,
@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import {
   DEFAULT_ZOOM,
   HCM_CENTER,
+  colorForType,
   geolocate,
   pointTypeLabelVi,
   type CollectionPoint,
@@ -39,71 +40,79 @@ interface MapViewProps {
   isLoggedIn: boolean
 }
 
-// Marker fill color is driven by `verified`:
-//   - verified  → emerald  (#16A34A) for trustworthy / admin-approved
-//   - unverified → amber   (#F59E0B) for community-contributed pending
-// Inner glyph still encodes type so users can scan map at a glance.
-const VERIFIED_COLOR = "#16A34A"
-const UNVERIFIED_COLOR = "#F59E0B"
-
-function typeGlyph(type: PointType): string {
-  switch (type) {
-    case "scrap_dealer":
-      return "S"
-    case "recycle_bin":
-      return "R"
-    case "ngo_dropoff":
-      return "N"
-    case "ewaste":
-      return "E"
-    case "other":
-    default:
-      return "•"
-  }
-}
-
+/**
+ * Marker uses a tinted teardrop with a colour-coded core. Verified
+ * pins get a solid filled circle (trustworthy), unverified pins get an
+ * inscribed triangle (community-contributed) so they are distinguishable
+ * at a glance even before the user reads the popup.
+ */
 function buildMarkerIcon(type: PointType, verified: boolean): L.DivIcon {
-  const color = verified ? VERIFIED_COLOR : UNVERIFIED_COLOR
+  const tone = colorForType(type)
   const ring = verified ? "#065F46" : "#92400E"
-  const glyph = verified ? "&#10003;" : typeGlyph(type)
+  const fillCore = verified ? "#FFFFFF" : tone
+  const innerHtml = verified
+    ? `<div style="
+        position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+        width:10px;height:10px;border-radius:50%;background:${fillCore};
+        box-shadow:0 0 0 2px ${tone};"></div>`
+    : `<div style="
+        position:absolute;left:50%;top:42%;transform:translate(-50%,-30%);
+        width:0;height:0;
+        border-left:7px solid transparent;border-right:7px solid transparent;
+        border-bottom:11px solid ${fillCore};"></div>`
+
   const html = `
-    <div style="position:relative;width:32px;height:40px;">
+    <div style="position:relative;width:34px;height:42px;">
       <div style="
-        width:32px;height:32px;border-radius:50%;
-        background:${color};
-        border:3px solid ${ring};
-        box-shadow:0 2px 6px rgba(0,0,0,0.25);
-        display:flex;align-items:center;justify-content:center;
-        color:white;font-size:14px;font-weight:700;">
-        ${glyph}
-      </div>
+        position:absolute;inset:0 0 4px 0;
+        border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+        background:${tone}33;
+        border:2px solid ${tone};
+        box-shadow:0 6px 14px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(255,255,255,0.6);
+        backdrop-filter:saturate(140%);"></div>
+      ${innerHtml}
       <div style="
-        position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);
+        position:absolute;left:50%;bottom:0;transform:translateX(-50%);
         width:0;height:0;
         border-left:6px solid transparent;
         border-right:6px solid transparent;
-        border-top:8px solid ${ring};"></div>
+        border-top:8px solid ${ring};
+        opacity:0.9;"></div>
     </div>`
   return L.divIcon({
     className: "reloop-marker",
     html,
-    iconSize: [32, 40],
-    iconAnchor: [16, 40],
+    iconSize: [34, 42],
+    iconAnchor: [17, 40],
     popupAnchor: [0, -36],
   })
 }
 
 function buildUserIcon(): L.DivIcon {
   const html = `
-    <div style="
-      width:18px;height:18px;border-radius:50%;
-      background:#2563EB;border:3px solid white;
-      box-shadow:0 0 0 2px #2563EB, 0 2px 6px rgba(0,0,0,0.3);"></div>`
+    <div style="position:relative;width:24px;height:24px;">
+      <div style="
+        position:absolute;inset:0;border-radius:50%;
+        background:#2563EB33;animation:reloop-pulse 1.6s ease-out infinite;"></div>
+      <div style="
+        position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+        width:14px;height:14px;border-radius:50%;background:#2563EB;
+        border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.35);"></div>
+    </div>
+    <style>
+      @keyframes reloop-pulse {
+        0% { transform: scale(0.6); opacity: 0.8; }
+        100% { transform: scale(1.6); opacity: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .reloop-user-marker div { animation: none !important; }
+      }
+    </style>`
   return L.divIcon({
     className: "reloop-user-marker",
     html,
-    iconSize: [18, 18],
-    iconAnchor: [9, 9],
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
   })
 }
 
@@ -210,12 +219,13 @@ export default function MapView({
             title="Vị trí của bạn"
           >
             <Popup>
-              <span className="text-sm font-medium">Bạn đang ở đây</span>
+              <span className="text-sm font-semibold">Bạn đang ở đây</span>
             </Popup>
           </Marker>
         )}
       </MapContainer>
 
+      {/* Floating control stack — top-right; designed states. */}
       <div className="pointer-events-none absolute right-3 top-3 z-[400] flex flex-col items-end gap-2">
         <PinPointDialog
           isLoggedIn={isLoggedIn}
@@ -227,22 +237,41 @@ export default function MapView({
           size="sm"
           onClick={handleLocate}
           disabled={locating}
-          className="pointer-events-auto shadow-md"
+          className="pointer-events-auto gap-1.5 rounded-full bg-white px-3 text-sky-800 shadow-soft-lg ring-1 ring-sky-300 hover:bg-sky-50"
           aria-label="Định vị tôi"
         >
-          <Locate className="h-4 w-4" aria-hidden />
+          <Locate className="size-3.5" aria-hidden />
           {locating ? "Đang định vị..." : "Vị trí của tôi"}
         </Button>
         {geoError && (
           <div
             role="status"
-            className="pointer-events-auto max-w-[220px] rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-900 shadow"
+            className="pointer-events-auto flex max-w-[240px] items-start gap-2 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900 shadow-soft-lg"
           >
-            {geoError}
+            <AlertCircle className="mt-0.5 size-3.5 shrink-0 text-amber-700" aria-hidden />
+            <span>{geoError}</span>
           </div>
         )}
+      </div>
+
+      {/* Bottom-left legend — small, ambient */}
+      <div className="pointer-events-none absolute bottom-4 left-3 z-[400] hidden items-center gap-3 rounded-full bg-white/90 px-3 py-1.5 text-[11px] shadow-soft-lg ring-1 ring-border/50 backdrop-blur md:inline-flex">
+        <span className="inline-flex items-center gap-1 text-foreground/80">
+          <span
+            aria-hidden
+            className="inline-block size-2.5 rounded-full bg-emerald-600 ring-2 ring-emerald-200"
+          />
+          Đã xác minh
+        </span>
+        <span className="text-border">•</span>
+        <span className="inline-flex items-center gap-1 text-foreground/80">
+          <span
+            aria-hidden
+            className="inline-block size-0 border-x-[5px] border-x-transparent border-b-[8px] border-b-amber-500"
+          />
+          Cộng đồng pin
+        </span>
       </div>
     </div>
   )
 }
-

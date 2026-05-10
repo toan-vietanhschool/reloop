@@ -10,17 +10,16 @@ export const metadata: Metadata = {
 
 export default function ScanPage() {
   return (
-    <main className="mx-auto w-full max-w-2xl px-4 py-8 sm:py-12">
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          AI Vision Scan
-        </h1>
-        <p className="mt-2 text-base text-muted-foreground">
-          Chụp 1 ảnh đồ vật bất kỳ. Tớ sẽ nói cho bạn biết nó làm bằng gì,
-          phân hủy bao lâu, và tái chế ở đâu được.
-        </p>
-      </header>
-      <ScanClient />
+    <main className="relative w-full">
+      {/* Soft mesh backdrop pinned to viewport edge for editorial depth.
+          Sits behind the scan card on every state. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-gradient-mesh opacity-80"
+      />
+      <div className="mx-auto w-full max-w-3xl px-4 pb-16 pt-6 sm:pt-10">
+        <ScanClient />
+      </div>
     </main>
   )
 }

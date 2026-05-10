@@ -131,7 +131,10 @@ export function ListingForm({ defaultCity }: ListingFormProps) {
     !isSubmitting && !isCompressing && title.trim().length >= 3
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 rounded-3xl border border-border/60 bg-card p-5 shadow-sm md:p-7"
+    >
       <div className="space-y-1.5">
         <label htmlFor="title" className="text-sm font-medium">
           Tiêu đề <span className="text-destructive">*</span>
@@ -293,8 +296,12 @@ export function ListingForm({ defaultCity }: ListingFormProps) {
         ) : null}
       </div>
 
-      <div className="flex gap-3 pt-2">
-        <Button type="submit" disabled={!canSubmit} className="h-11 px-6">
+      <div className="flex flex-wrap items-center gap-3 border-t border-border/60 pt-5">
+        <Button
+          type="submit"
+          disabled={!canSubmit}
+          className="h-11 bg-emerald-600 px-6 text-white shadow-md hover:bg-emerald-700"
+        >
           {isSubmitting ? "Đang đăng..." : "Đăng tin"}
         </Button>
         <Button
@@ -306,6 +313,9 @@ export function ListingForm({ defaultCity }: ListingFormProps) {
         >
           Hủy
         </Button>
+        <p className="ml-auto text-[11px] text-muted-foreground">
+          Bài đăng sẽ được kiểm duyệt trước khi hiển thị công khai.
+        </p>
       </div>
     </form>
   )

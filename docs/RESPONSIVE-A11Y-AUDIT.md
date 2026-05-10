@@ -114,3 +114,90 @@ OKLCH tokens from `app/globals.css`:
 5. `components/listings/ListingForm.tsx` — bumped photo-remove button to `h-7 w-7` and added focus ring.
 
 No supabase/, lib/openai/, or actions/ files modified. No new packages installed.
+
+---
+
+## Post-refactor a11y audit 2026-05-10
+
+> Scope: 41 refactored files + 27 added images across marketing/app/admin. WCAG 2.1 AA target. Static analysis only.
+
+### Severity counts
+- CRITICAL: 0
+- HIGH: 1
+- MEDIUM: 4
+- LOW: 3
+
+### [HIGH] components/listings/PhotoGrid.tsx:182 — Lightbox close uses div+onClick over backdrop
+**Issue:** The full-screen lightbox `role="dialog"` listens for `onClick` on its container to close, with a separately positioned `<button aria-label="Đóng">`. Click anywhere on the backdrop closes — no Escape handler, no focus trap, no return-focus to the trigger. Keyboard users have no Escape key path; tabbing leaves the dialog into the page underneath.
+**WCAG:** 2.1.2 No Keyboard Trap (inverse — no escape) + 2.4.3 Focus Order + 4.1.2 Name/Role/Value (modal contract).
+**Recommendation:** Add `useEffect` to bind `Escape` → `onClose`, focus the close button on open, restore focus to the photo button on close. Minimal: 12-line `useEffect`.
+**Fix effort:** S
+
+### [MEDIUM] components/scan/ResultCard.tsx:146 — User photo `<img>` over decorative backdrop lacks aspect dims
+**Issue:** Raw `<img>` (Blob URL) with no width/height — causes CLS on slow networks during AI roundtrip. Backdrop Image has `alt=""` correctly.
+**WCAG:** 1.4.10 Reflow (CLS proxy).
+**Recommendation:** Wrap in `aspect-square` already present; add explicit `width={300} height={300}` on `<img>` for layout reservation.
+**Fix effort:** S
+
+### [MEDIUM] app/(marketing)/page.tsx — Landing has no `<main>` landmark
+**Issue:** `MarketingHome()` returns `<HeroSection>` + `<section>` + ... + `<Footer>` — no `<main>` element; the marketing layout wraps them in `<div id="main-content">`. Screen-reader landmark navigation will skip the page entirely.
+**WCAG:** 1.3.1 Info and Relationships, 2.4.1 Bypass Blocks (skip-link target should land on `<main>`).
+**Recommendation:** Change `<div id="main-content">` in `app/(marketing)/layout.tsx` to `<main id="main-content">`. Same for `app/(app)/layout.tsx` if it's the only content wrapper.
+**Fix effort:** S
+
+### [MEDIUM] components/shared/Header.tsx:58 — `<details>/<summary>` user-menu lacks aria-expanded sync
+**Issue:** Native disclosure pattern works for sighted/keyboard users, but the `<div role="menu">` inside is announced as a menu without `aria-expanded` on the trigger. Some screen readers (NVDA + Firefox) miss the toggle state.
+**WCAG:** 4.1.2 Name, Role, Value.
+**Recommendation:** Either drop `role="menu"` from the popover (treat as plain disclosure) or migrate to a Radix DropdownMenu primitive that handles the ARIA contract.
+**Fix effort:** M
+
+### [MEDIUM] Multiple admin tables — `min-w-[920px]` forces horiz scroll on 320px
+**Issue:** ModerationTable/UserTable/PointsTable wrapped in `overflow-x-auto` works but content is off-screen on first paint. From earlier audit (M1-M3) — still deferred.
+**WCAG:** 1.4.10 Reflow (acceptable per spec for tables, but UX-poor).
+**Recommendation:** Convert to stacked-card layout `<md:` for mobile admin.
+**Fix effort:** L
+
+### [LOW] components/listings/ListingCard.tsx:110 — `aria-label` mixes English ("eco points") on Vietnamese site
+**Issue:** Site `lang="vi"` but aria-label reads "{N} eco points" — screen reader may switch voice or mispronounce.
+**WCAG:** 3.1.2 Language of Parts (AAA, but cleanliness).
+**Recommendation:** Use "eco-points" hyphen or fully Vietnamese "{N} điểm sinh thái".
+**Fix effort:** S
+
+### [LOW] components/profile/BadgeGrid.tsx:86 — `<article title=...>` tooltip not keyboard-accessible
+**Issue:** Long badge description only surfaces via native `title` tooltip — sighted-only on hover, not focusable since `<article>` isn't tab-stop.
+**WCAG:** 1.3.1 / 4.1.2 — info hidden behind hover-only.
+**Recommendation:** Either expand description below name as visible text (already partial via `line-clamp-2`) or wrap each cell in a button with `aria-describedby`.
+**Fix effort:** M
+
+### [LOW] app/globals.css:151 — `prefers-reduced-motion` doesn't gate canvas-confetti
+**Issue:** Carries over from earlier audit L2. BadgeUnlockDialog still fires confetti.
+**WCAG:** 2.3.3 Animation from Interactions (AAA).
+**Recommendation:** Gate `import("canvas-confetti")` behind `window.matchMedia("(prefers-reduced-motion: no-preference)").matches`.
+**Fix effort:** S
+
+### Inline fix this pass
+1. `components/listings/ListingCard.tsx` — `aria-label` polished from "eco points" to "eco-points" (cosmetic; full Vietnamese still recommended).
+
+### Coverage stats post-refactor
+- Files using `aria-label`/`aria-labelledby`: 39 files / 74 occurrences (up from 36/?).
+- Forms with `<label htmlFor>`: ListingForm (8 fields), PinPointDialog (8 fields), ProfileEditForm — all wired.
+- Dialogs with `role="dialog"`+`aria-modal="true"`: 7 (PhotoGrid, MapPageClient drawer, ShareDialog, BadgeUnlockDialog, SchoolPrompt, CookieBanner, PinPointDialog). 6 of 7 have aria-label or aria-labelledby; PhotoGrid lightbox has aria-label only (good).
+- Status messages: Sonner `<Toaster>` provides aria-live by default; CookieBanner + Skeleton + MapView loader explicitly add `aria-live="polite"`.
+- Skip-link present + reveals on focus + targets `#main-content` (currently a `<div>`, see MEDIUM #3).
+- All `<Image>` usages reviewed: decorative backdrops correctly use `alt=""`, informational images use descriptive alt (HeroSection, ListingCard photos, ScanClient examples).
+- All icon-only buttons reviewed (17 occurrences) — every one carries `aria-label`.
+- `prefers-reduced-motion` guards: hero-fade-up, float-slow, scroll-cue, sparkle-orbit all gated. Confetti not gated (LOW).
+
+### What improved post-refactor vs Tick 3
+- Added images carry correct alt patterns (descriptive for content, empty for backdrop).
+- Heading hierarchy clean: every page now has exactly one h1; h2/h3 properly nested.
+- Map page has visually-hidden h1 ("Bản đồ điểm thu gom") — addresses Tick 3 H4-precursor.
+- Per-page `<title>` metadata set (verified via Tick 3 commit `1eb9108`).
+- Focus-visible rings now consistent across PillarCard, ListingCard, dashboard cards (offset-2 + emerald-400/500 ring).
+
+### Recommended Sprint 3 priority (a11y-only)
+1. **HIGH** — Add Escape + focus-trap + return-focus to PhotoGrid lightbox (`useEffect` ~12 lines).
+2. **MEDIUM** — Promote `<div id="main-content">` to `<main id="main-content">` in both `(marketing)` and `(app)` layouts.
+3. **MEDIUM** — Replace Header `<details>` user menu with Radix DropdownMenu (or drop `role="menu"`).
+4. **LOW** — Gate canvas-confetti import behind reduced-motion media query.
+5. Run axe-core in Playwright e2e once CI is wired.

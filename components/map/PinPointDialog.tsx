@@ -1,8 +1,8 @@
 "use client"
 
-import { Locate, Plus, X } from "lucide-react"
+import { Locate, MapPin, Plus, Sparkles, X } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useEffect, useId, useRef, useState, type FormEvent } from "react"
+import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react"
 import { toast } from "sonner"
 
 import { pinCollectionPoint } from "@/actions/collection-points"
@@ -66,10 +66,10 @@ export function PinPointDialog({
         variant="default"
         size="sm"
         onClick={() => setOpen(true)}
-        className="pointer-events-auto shadow-md"
+        className="pointer-events-auto gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-500 px-3 text-white shadow-brand hover:brightness-105"
         aria-label="Pin điểm thu gom mới"
       >
-        <Plus className="h-4 w-4" aria-hidden />
+        <Plus className="size-3.5" aria-hidden />
         Pin điểm mới
       </Button>
 
@@ -212,9 +212,31 @@ function PinPointDialogBody({
     }
   }
 
+  // Build a static map preview URL using OSM's tile endpoint. Coarse
+  // single-tile preview — free, no API key, conveys roughly where the
+  // pin will land. Re-derived only when the lat/lng strings parse.
+  const previewUrl = useMemo(() => {
+    const lat = Number.parseFloat(state.lat)
+    const lng = Number.parseFloat(state.lng)
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
+    const z = 14
+    const xtile = Math.floor(((lng + 180) / 360) * Math.pow(2, z))
+    const ytile = Math.floor(
+      ((1 -
+        Math.log(
+          Math.tan((lat * Math.PI) / 180) +
+            1 / Math.cos((lat * Math.PI) / 180),
+        ) /
+          Math.PI) /
+        2) *
+        Math.pow(2, z),
+    )
+    return `https://tile.openstreetmap.org/${z}/${xtile}/${ytile}.png`
+  }, [state.lat, state.lng])
+
   return (
     <div
-      className="fixed inset-0 z-[1100] flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4"
+      className="fixed inset-0 z-[1100] flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby={headingId}
@@ -228,33 +250,51 @@ function PinPointDialogBody({
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className="relative flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-t-xl bg-background shadow-2xl outline-none sm:rounded-xl"
+        className="relative flex max-h-[92vh] w-full max-w-xl flex-col overflow-hidden rounded-t-3xl bg-background shadow-2xl outline-none sm:rounded-3xl"
       >
-        <div className="flex items-center justify-between border-b px-5 py-3">
-          <h2
-            id={headingId}
-            className="text-base font-semibold leading-snug"
-          >
-            Pin điểm thu gom mới
-          </h2>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label="Đóng"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" aria-hidden />
-          </Button>
+        {/* Header */}
+        <div className="relative isolate overflow-hidden border-b border-border/60 bg-gradient-to-br from-emerald-50 via-white to-sky-50 px-5 py-4">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-emerald-300/40 blur-2xl"
+          />
+          <div className="relative flex items-start justify-between gap-3">
+            <div>
+              <p className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-700">
+                <Sparkles className="size-3" aria-hidden />
+                +{POINTS.point_pin} eco points
+              </p>
+              <h2
+                id={headingId}
+                className="mt-1 text-lg font-bold leading-snug tracking-tight"
+              >
+                Pin điểm thu gom mới
+              </h2>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Cảm ơn bạn đã đóng góp! Điểm sẽ chờ admin xác minh trước khi
+                lên xanh.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Đóng"
+              onClick={onClose}
+              className="-mr-1"
+            >
+              <X className="size-4" aria-hidden />
+            </Button>
+          </div>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-4"
+          className="flex flex-1 flex-col gap-5 overflow-y-auto px-5 py-5"
         >
           <div className="space-y-1.5">
-            <label htmlFor="cp-name" className="text-sm font-medium">
-              Tên điểm <span className="text-destructive">*</span>
+            <label htmlFor="cp-name" className="text-sm font-semibold">
+              Tên điểm <span className="text-rose-500">*</span>
             </label>
             <Input
               id="cp-name"
@@ -272,8 +312,8 @@ function PinPointDialogBody({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="cp-type" className="text-sm font-medium">
-              Loại điểm <span className="text-destructive">*</span>
+            <label htmlFor="cp-type" className="text-sm font-semibold">
+              Loại điểm <span className="text-rose-500">*</span>
             </label>
             <select
               id="cp-type"
@@ -297,95 +337,116 @@ function PinPointDialogBody({
             </select>
           </div>
 
-          <div className="space-y-1.5">
-            <fieldset>
-              <legend className="text-sm font-medium">
-                Vật liệu nhận{" "}
-                <span className="text-destructive">*</span>
-              </legend>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
-                Chọn ít nhất 1 vật liệu mà điểm này thu gom.
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-semibold">
+              Vật liệu nhận <span className="text-rose-500">*</span>
+            </legend>
+            <p className="text-[11px] text-muted-foreground">
+              Chọn ít nhất 1 vật liệu mà điểm này thu gom.
+            </p>
+            <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+              {MATERIAL_OPTIONS.map((option) => {
+                const checked = state.accepts.has(option.code)
+                return (
+                  <label
+                    key={option.code}
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl border px-2.5 py-2 text-xs font-medium transition-colors ${
+                      checked
+                        ? "border-emerald-500 bg-emerald-50 text-emerald-900 shadow-sm"
+                        : "border-input bg-background hover:border-emerald-200 hover:bg-emerald-50/40"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleAccept(option.code)}
+                      disabled={submitting}
+                      className="size-3.5 accent-emerald-600"
+                    />
+                    <span
+                      aria-hidden
+                      className="inline-block size-2.5 rounded-full ring-1 ring-white"
+                      style={{ backgroundColor: option.color }}
+                    />
+                    <span className="flex-1 truncate">{option.name_vi}</span>
+                  </label>
+                )
+              })}
+            </div>
+          </fieldset>
+
+          {/* Coordinates + map preview */}
+          <div className="space-y-3 rounded-2xl border border-border/50 bg-muted/20 p-3">
+            <div className="flex items-center gap-2 text-emerald-700">
+              <MapPin className="size-3.5" aria-hidden />
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em]">
+                Vị trí pin
               </p>
-              <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-                {MATERIAL_OPTIONS.map((option) => {
-                  const checked = state.accepts.has(option.code)
-                  return (
-                    <label
-                      key={option.code}
-                      className={`flex cursor-pointer items-center gap-2 rounded-md border px-2 py-1.5 text-xs transition-colors ${
-                        checked
-                          ? "border-emerald-500 bg-emerald-50 text-emerald-900"
-                          : "border-input bg-background hover:bg-accent"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => toggleAccept(option.code)}
-                        disabled={submitting}
-                        className="h-3.5 w-3.5 accent-emerald-600"
-                      />
-                      <span className="flex-1 truncate">
-                        {option.name_vi}
-                      </span>
-                    </label>
-                  )
-                })}
+            </div>
+            <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+              <div className="space-y-1">
+                <label htmlFor="cp-lat" className="text-xs font-medium">
+                  Vĩ độ <span className="text-rose-500">*</span>
+                </label>
+                <Input
+                  id="cp-lat"
+                  name="lat"
+                  inputMode="decimal"
+                  required
+                  value={state.lat}
+                  onChange={(e) =>
+                    setState((prev) => ({ ...prev, lat: e.target.value }))
+                  }
+                  disabled={submitting}
+                />
               </div>
-            </fieldset>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <label htmlFor="cp-lat" className="text-sm font-medium">
-                Vĩ độ <span className="text-destructive">*</span>
-              </label>
-              <Input
-                id="cp-lat"
-                name="lat"
-                inputMode="decimal"
-                required
-                value={state.lat}
-                onChange={(e) =>
-                  setState((prev) => ({ ...prev, lat: e.target.value }))
-                }
-                disabled={submitting}
-              />
+              <div className="space-y-1">
+                <label htmlFor="cp-lng" className="text-xs font-medium">
+                  Kinh độ <span className="text-rose-500">*</span>
+                </label>
+                <Input
+                  id="cp-lng"
+                  name="lng"
+                  inputMode="decimal"
+                  required
+                  value={state.lng}
+                  onChange={(e) =>
+                    setState((prev) => ({ ...prev, lng: e.target.value }))
+                  }
+                  disabled={submitting}
+                />
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleUseLocation}
+                disabled={locating || submitting}
+                className="self-end gap-1"
+              >
+                <Locate className="size-3.5" aria-hidden />
+                {locating ? "Đang lấy..." : "Vị trí của tôi"}
+              </Button>
             </div>
-            <div className="space-y-1.5">
-              <label htmlFor="cp-lng" className="text-sm font-medium">
-                Kinh độ <span className="text-destructive">*</span>
-              </label>
-              <Input
-                id="cp-lng"
-                name="lng"
-                inputMode="decimal"
-                required
-                value={state.lng}
-                onChange={(e) =>
-                  setState((prev) => ({ ...prev, lng: e.target.value }))
-                }
-                disabled={submitting}
-              />
-            </div>
+            {previewUrl && (
+              <div className="relative overflow-hidden rounded-xl border border-border/60 bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={previewUrl}
+                  alt="Bản đồ xem trước vị trí pin"
+                  className="aspect-[3/2] w-full object-cover"
+                />
+                <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full">
+                  <span className="flex size-7 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg ring-2 ring-white">
+                    <MapPin className="size-3.5" aria-hidden />
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleUseLocation}
-            disabled={locating || submitting}
-            className="w-full"
-          >
-            <Locate className="h-4 w-4" aria-hidden />
-            {locating
-              ? "Đang lấy vị trí..."
-              : "Dùng vị trí hiện tại của tôi"}
-          </Button>
 
           <div className="space-y-1.5">
-            <label htmlFor="cp-address" className="text-sm font-medium">
+            <label htmlFor="cp-address" className="text-sm font-semibold">
               Địa chỉ
             </label>
             <Input
@@ -406,7 +467,7 @@ function PinPointDialogBody({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <label htmlFor="cp-phone" className="text-sm font-medium">
+              <label htmlFor="cp-phone" className="text-sm font-semibold">
                 Số điện thoại
               </label>
               <Input
@@ -425,7 +486,7 @@ function PinPointDialogBody({
               />
             </div>
             <div className="space-y-1.5">
-              <label htmlFor="cp-hours" className="text-sm font-medium">
+              <label htmlFor="cp-hours" className="text-sm font-semibold">
                 Giờ mở cửa
               </label>
               <Input
@@ -446,7 +507,7 @@ function PinPointDialogBody({
           </div>
 
           <div className="space-y-1.5">
-            <label htmlFor="cp-notes" className="text-sm font-medium">
+            <label htmlFor="cp-notes" className="text-sm font-semibold">
               Ghi chú
             </label>
             <textarea
@@ -467,7 +528,7 @@ function PinPointDialogBody({
             />
           </div>
 
-          <div className="flex flex-col-reverse gap-2 border-t pt-3 sm:flex-row sm:justify-end">
+          <div className="sticky bottom-0 -mx-5 -mb-5 flex flex-col-reverse gap-2 border-t border-border/60 bg-background/95 px-5 py-3 backdrop-blur sm:flex-row sm:justify-end">
             <Button
               type="button"
               variant="outline"
@@ -479,6 +540,7 @@ function PinPointDialogBody({
             <Button
               type="submit"
               disabled={submitting || state.name.trim().length < 3}
+              className="bg-gradient-to-r from-emerald-600 to-emerald-500 font-semibold shadow-brand hover:brightness-105"
             >
               {submitting
                 ? "Đang gửi..."

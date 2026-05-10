@@ -1,7 +1,9 @@
 "use client"
 
+import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState, type FormEvent } from "react"
+import { useMemo, useState, type FormEvent } from "react"
+import { ImageOff, User } from "lucide-react"
 import { toast } from "sonner"
 
 import { updateProfile } from "@/actions/auth"
@@ -34,6 +36,12 @@ function isValidUrl(value: string): boolean {
   }
 }
 
+function getInitial(name: string): string {
+  const trimmed = name.trim()
+  if (!trimmed) return "🌱"
+  return (trimmed[0] ?? "").toUpperCase()
+}
+
 export function ProfileEditForm({ defaultValues }: ProfileEditFormProps) {
   const router = useRouter()
   const [displayName, setDisplayName] = useState(defaultValues.display_name)
@@ -41,6 +49,13 @@ export function ProfileEditForm({ defaultValues }: ProfileEditFormProps) {
   const [city, setCity] = useState(defaultValues.city)
   const [avatarUrl, setAvatarUrl] = useState(defaultValues.avatar_url)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const initial = getInitial(displayName)
+  const previewUrl = useMemo(() => {
+    const trimmed = avatarUrl.trim()
+    if (!trimmed) return null
+    return isValidUrl(trimmed) ? trimmed : null
+  }, [avatarUrl])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -64,7 +79,9 @@ export function ProfileEditForm({ defaultValues }: ProfileEditFormProps) {
       return
     }
     if (!isValidUrl(avatarUrl.trim())) {
-      toast.error("URL avatar không hợp lệ — cần bắt đầu bằng http:// hoặc https://.")
+      toast.error(
+        "URL avatar không hợp lệ — cần bắt đầu bằng http:// hoặc https://.",
+      )
       return
     }
 
@@ -91,12 +108,46 @@ export function ProfileEditForm({ defaultValues }: ProfileEditFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-7">
+      {/* Avatar preview row -------------------------------------- */}
+      <div className="flex items-center gap-4 rounded-2xl border border-border/40 bg-muted/20 p-4">
+        <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-emerald-100 text-2xl font-extrabold text-emerald-800 ring-2 ring-emerald-200">
+          {previewUrl ? (
+            <Image
+              src={previewUrl}
+              alt=""
+              width={80}
+              height={80}
+              className="h-full w-full object-cover"
+              unoptimized
+            />
+          ) : avatarUrl.trim() ? (
+            <ImageOff className="size-6 text-rose-500" aria-hidden />
+          ) : (
+            <span aria-hidden>{initial}</span>
+          )}
+        </span>
+        <div className="min-w-0">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            Avatar
+          </p>
+          <p className="text-sm font-semibold tracking-tight">
+            {displayName.trim() || "Tên hiển thị"}
+          </p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {previewUrl
+              ? "Xem trước ảnh đại diện trên đây."
+              : "Dán URL ảnh phía dưới để xem trước."}
+          </p>
+        </div>
+      </div>
+
       <Field
         id="display_name"
         label="Tên hiển thị"
         required
         hint={`${DISPLAY_NAME_MIN}–${DISPLAY_NAME_MAX} ký tự`}
+        icon={<User className="size-3.5" aria-hidden />}
       >
         <Input
           id="display_name"
@@ -139,7 +190,7 @@ export function ProfileEditForm({ defaultValues }: ProfileEditFormProps) {
       <Field
         id="avatar_url"
         label="URL avatar"
-        hint="Dán link ảnh (tuỳ chọn)"
+        hint="Dán link ảnh — JPG hoặc PNG"
       >
         <Input
           id="avatar_url"
@@ -151,10 +202,7 @@ export function ProfileEditForm({ defaultValues }: ProfileEditFormProps) {
         />
       </Field>
 
-      <div className="flex items-center gap-3">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Đang lưu…" : "Lưu thay đổi"}
-        </Button>
+      <div className="flex flex-col-reverse gap-2 border-t border-border/60 pt-5 sm:flex-row sm:items-center sm:justify-end">
         <Button
           type="button"
           variant="ghost"
@@ -162,6 +210,13 @@ export function ProfileEditForm({ defaultValues }: ProfileEditFormProps) {
           disabled={isSubmitting}
         >
           Huỷ
+        </Button>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-gradient-to-r from-emerald-600 to-sky-500 font-semibold shadow-brand hover:brightness-105"
+        >
+          {isSubmitting ? "Đang lưu…" : "Lưu thay đổi"}
         </Button>
       </div>
     </form>
@@ -173,18 +228,25 @@ interface FieldProps {
   label: string
   hint?: string
   required?: boolean
+  icon?: React.ReactNode
   children: React.ReactNode
 }
 
-function Field({ id, label, hint, required, children }: FieldProps) {
+function Field({ id, label, hint, required, icon, children }: FieldProps) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="text-sm font-medium">
+      <label
+        htmlFor={id}
+        className="flex items-center gap-1.5 text-sm font-semibold tracking-tight"
+      >
+        {icon}
         {label}
-        {required ? <span className="ml-0.5 text-destructive">*</span> : null}
+        {required ? <span className="ml-0.5 text-rose-500">*</span> : null}
       </label>
       {children}
-      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
+      {hint ? (
+        <p className="text-xs text-muted-foreground">{hint}</p>
+      ) : null}
     </div>
   )
 }

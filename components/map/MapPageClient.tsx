@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic"
 import { useMemo, useState } from "react"
-import { Filter, X } from "lucide-react"
+import { Filter, Loader2, X } from "lucide-react"
 
 import { FilterSidebar } from "@/components/map/FilterSidebar"
 import { Button } from "@/components/ui/button"
@@ -16,8 +16,13 @@ import {
 const MapView = dynamic(() => import("@/components/map/MapView"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full w-full items-center justify-center bg-slate-100">
-      <p className="text-sm text-muted-foreground">Đang tải bản đồ...</p>
+    <div className="flex h-full w-full items-center justify-center bg-gradient-mesh">
+      <div className="flex flex-col items-center gap-3 rounded-2xl bg-white px-5 py-4 shadow-soft-lg">
+        <Loader2 className="size-5 animate-spin text-emerald-600" aria-hidden />
+        <p className="text-sm font-medium text-foreground/80">
+          Đang tải bản đồ...
+        </p>
+      </div>
     </div>
   ),
 })
@@ -67,9 +72,9 @@ export function MapPageClient({
   return (
     <main className="relative flex h-[calc(100vh-3.5rem)] w-full overflow-hidden">
       {/* Visually hidden page heading for screen readers — the visible
-          UI is map-driven and has no on-page H1. WCAG 2.4.6 (Headings
-          and Labels) and 1.3.1 (Info and Relationships). */}
+          UI is map-driven and has no on-page H1. */}
       <h1 className="sr-only">Bản đồ điểm thu gom</h1>
+
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:flex-shrink-0">
         <FilterSidebar
@@ -93,21 +98,24 @@ export function MapPageClient({
           isLoggedIn={isLoggedIn}
         />
 
-        {/* Mobile filter trigger */}
+        {/* Mobile filter trigger — surfaced pill */}
         <Button
           type="button"
           variant="default"
           size="sm"
           onClick={() => setDrawerOpen(true)}
-          className="absolute left-3 top-3 z-[400] shadow-md md:hidden"
+          className="absolute left-3 top-3 z-[400] gap-1.5 rounded-full bg-white px-3 text-emerald-800 shadow-soft-lg ring-1 ring-emerald-300 hover:bg-emerald-50 md:hidden"
           aria-label="Mở bộ lọc"
         >
-          <Filter className="h-4 w-4" aria-hidden />
+          <Filter className="size-3.5" aria-hidden />
           Bộ lọc
+          <span className="ml-1 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold tabular-nums">
+            {visibleCount}
+          </span>
         </Button>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile bottom-sheet drawer */}
       {drawerOpen && (
         <div
           className="fixed inset-0 z-[1000] flex md:hidden"
@@ -118,12 +126,14 @@ export function MapPageClient({
           <button
             type="button"
             aria-label="Đóng bộ lọc"
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setDrawerOpen(false)}
           />
-          <div className="relative ml-auto flex h-full w-[85%] max-w-sm flex-col bg-background shadow-xl">
-            <div className="flex items-center justify-between border-b p-3">
-              <h2 className="text-base font-semibold">Bộ lọc</h2>
+          <div className="relative ml-auto flex h-full w-[88%] max-w-sm flex-col overflow-hidden rounded-l-3xl bg-background shadow-2xl">
+            {/* Drag handle visual cue */}
+            <div className="absolute left-1/2 top-2 h-1 w-12 -translate-x-1/2 rounded-full bg-foreground/20" />
+            <div className="flex items-center justify-between border-b border-border/60 px-4 py-3 pt-5">
+              <h2 className="text-base font-bold tracking-tight">Bộ lọc</h2>
               <Button
                 type="button"
                 variant="ghost"
@@ -131,7 +141,7 @@ export function MapPageClient({
                 aria-label="Đóng"
                 onClick={() => setDrawerOpen(false)}
               >
-                <X className="h-4 w-4" aria-hidden />
+                <X className="size-4" aria-hidden />
               </Button>
             </div>
             <FilterSidebar

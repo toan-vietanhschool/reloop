@@ -10,6 +10,7 @@ interface HeaderProps {
 }
 
 const navLinks = [
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/listings", label: "Listings" },
   { href: "/map", label: "Bản đồ" },
   { href: "/leaderboard", label: "Leaderboard" },
@@ -20,22 +21,27 @@ export function Header({ profile }: HeaderProps) {
   const initials = getInitials(displayName)
 
   return (
-    <header className="sticky top-0 z-30 w-full border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
+    <header className="sticky top-0 z-30 w-full border-b border-border/60 bg-background/75 backdrop-blur-md supports-[backdrop-filter]:bg-background/55">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 text-base font-bold tracking-tight"
+          className="flex items-center gap-2 text-base font-bold tracking-tight transition-opacity hover:opacity-80"
         >
-          <span aria-hidden>🌱</span>
+          <span
+            aria-hidden
+            className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm"
+          >
+            🌱
+          </span>
           <span>ReLoop</span>
         </Link>
 
-        <nav aria-label="Main" className="hidden items-center gap-6 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="group relative inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-emerald-50/60 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
               {link.label}
             </Link>
@@ -44,15 +50,18 @@ export function Header({ profile }: HeaderProps) {
 
         <div className="flex items-center gap-3">
           {profile ? (
-            <UserBadge ecoPoints={profile.eco_points} className="hidden sm:inline-flex" />
+            <UserBadge
+              ecoPoints={profile.eco_points}
+              className="hidden sm:inline-flex"
+            />
           ) : null}
           <details className="group relative">
             <summary
-              className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-border bg-card px-2 py-1 text-sm font-medium shadow-sm transition-colors hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring"
+              className="flex cursor-pointer list-none items-center gap-2 rounded-full border border-border bg-card px-2 py-1 text-sm font-medium shadow-sm transition-all hover:border-emerald-300 hover:bg-emerald-50/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
               aria-label="User menu"
             >
               <span
-                className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-emerald-100 text-xs font-bold text-emerald-800"
+                className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 text-xs font-bold text-emerald-800"
                 aria-hidden
               >
                 {profile?.avatar_url ? (
@@ -72,10 +81,10 @@ export function Header({ profile }: HeaderProps) {
             </summary>
             <div
               role="menu"
-              className="absolute right-0 mt-2 w-56 rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md"
+              className="absolute right-0 mt-2 w-60 rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lg ring-1 ring-black/5"
             >
               {profile ? (
-                <div className="flex items-center gap-2 px-2 py-2 sm:hidden">
+                <div className="flex items-center gap-2 rounded-lg bg-emerald-50/60 px-3 py-2 sm:hidden">
                   <UserBadge ecoPoints={profile.eco_points} />
                 </div>
               ) : null}
@@ -86,7 +95,7 @@ export function Header({ profile }: HeaderProps) {
                     key={link.href}
                     href={link.href}
                     role="menuitem"
-                    className="block rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
+                    className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-emerald-50/60"
                   >
                     {link.label}
                   </Link>
@@ -96,14 +105,14 @@ export function Header({ profile }: HeaderProps) {
               <Link
                 href="/profile"
                 role="menuitem"
-                className="block rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
+                className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-emerald-50/60"
               >
                 Hồ sơ
               </Link>
               <Link
                 href="/dashboard"
                 role="menuitem"
-                className="block rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
+                className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-emerald-50/60"
               >
                 Dashboard
               </Link>
@@ -112,7 +121,7 @@ export function Header({ profile }: HeaderProps) {
                 <button
                   type="submit"
                   role="menuitem"
-                  className="w-full rounded-sm px-2 py-1.5 text-left text-sm text-destructive hover:bg-destructive/10"
+                  className="w-full rounded-lg px-3 py-2 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
                 >
                   Đăng xuất
                 </button>

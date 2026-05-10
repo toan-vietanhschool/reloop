@@ -31,17 +31,11 @@ export function VoteButtons({
   // Optimistic deltas relative to the prop counts — by storing a delta
   // rather than absolute counters, we avoid an effect to sync against
   // updated `upvotes` / `downvotes` props after a `router.refresh()`.
-  // The React Compiler rule `react-hooks/set-state-in-effect` flags
-  // synchronous setState inside effects, so we derive the displayed
-  // count instead of mirroring it.
   const [pendingDelta, setPendingDelta] = useState<{
     up: number
     down: number
   }>({ up: 0, down: 0 })
 
-  // Fetch the user's current vote on mount when no initialVote was
-  // provided. The popup may be rendered for a marker the parent didn't
-  // pre-fetch (e.g. user just opened the popup).
   useEffect(() => {
     let cancelled = false
     if (!isLoggedIn || initialVote !== null) return
@@ -93,14 +87,11 @@ export function VoteButtons({
     startTransition(async () => {
       const result = await voteCollectionPoint(pointId, kind)
       if (result.error) {
-        // Roll back optimistic update.
         setCurrentVote(previousVote)
         setPendingDelta(previousDelta)
         toast.error("Không thể bình chọn", { description: result.error })
         return
       }
-      // Reset the delta so the next render uses the freshly-revalidated
-      // prop counts as the source of truth.
       setPendingDelta({ up: 0, down: 0 })
       router.refresh()
     })
@@ -110,7 +101,7 @@ export function VoteButtons({
   const downActive = currentVote === "down"
 
   return (
-    <div className="flex items-center gap-2 border-t pt-2">
+    <div className="flex items-center gap-2 border-t border-border/40 pt-2">
       <button
         type="button"
         onClick={() => handleVote("up")}
@@ -118,17 +109,15 @@ export function VoteButtons({
         aria-label={upActive ? "Bỏ bình chọn ủng hộ" : "Bình chọn ủng hộ"}
         aria-pressed={upActive}
         className={cn(
-          // min-h-[24px] meets WCAG 2.5.8 Target Size (Minimum); the
-          // px-2.5 py-1.5 lift makes the actual hit area ~28px tall.
-          "inline-flex min-h-[24px] items-center gap-1 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "inline-flex min-h-[26px] items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           upActive
-            ? "border-emerald-500 bg-emerald-50 text-emerald-800"
-            : "border-input bg-background text-muted-foreground hover:bg-accent",
+            ? "border-emerald-500 bg-emerald-500 text-white shadow-sm"
+            : "border-border bg-background text-foreground/70 hover:border-emerald-300 hover:bg-emerald-50",
           (!isLoggedIn || isPending) && "cursor-not-allowed opacity-60",
         )}
       >
-        <ThumbsUp className="h-3.5 w-3.5" aria-hidden />
-        {optimisticUp}
+        <ThumbsUp className="size-3" aria-hidden />
+        <span className="tabular-nums">{optimisticUp}</span>
       </button>
       <button
         type="button"
@@ -137,15 +126,15 @@ export function VoteButtons({
         aria-label={downActive ? "Bỏ bình chọn không hữu ích" : "Bình chọn không hữu ích"}
         aria-pressed={downActive}
         className={cn(
-          "inline-flex min-h-[24px] items-center gap-1 rounded-md border px-2.5 py-1.5 text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "inline-flex min-h-[26px] items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           downActive
-            ? "border-rose-500 bg-rose-50 text-rose-800"
-            : "border-input bg-background text-muted-foreground hover:bg-accent",
+            ? "border-rose-500 bg-rose-500 text-white shadow-sm"
+            : "border-border bg-background text-foreground/70 hover:border-rose-300 hover:bg-rose-50",
           (!isLoggedIn || isPending) && "cursor-not-allowed opacity-60",
         )}
       >
-        <ThumbsDown className="h-3.5 w-3.5" aria-hidden />
-        {optimisticDown}
+        <ThumbsDown className="size-3" aria-hidden />
+        <span className="tabular-nums">{optimisticDown}</span>
       </button>
       {!isLoggedIn && (
         <span className="text-[10px] italic text-muted-foreground">

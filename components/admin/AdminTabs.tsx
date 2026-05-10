@@ -14,18 +14,18 @@ interface AdminTabsProps {
 }
 
 /**
- * Server-rendered admin tab strip. We use real <Link> elements (not a
- * client-state tab component) so each tab gets its own URL, can be
- * deep-linked, and preserves Next.js streaming + RSC caching per route.
+ * Server-rendered admin tab strip. Sticky under the AdminHeader so the
+ * active tab + counts stay visible while the table scrolls.
  *
- * Active state is derived from the `activeHref` prop instead of
- * `usePathname`, keeping this component a server component.
+ * Active state derives from the `activeHref` prop instead of
+ * `usePathname`, keeping this a server component and one HTTP request
+ * per active tab.
  */
 export function AdminTabs({ tabs, activeHref }: AdminTabsProps) {
   return (
     <nav
       aria-label="Tab kiểm duyệt"
-      className="mb-5 flex flex-wrap items-center gap-1 rounded-lg border border-amber-200 bg-white p-1 shadow-sm"
+      className="sticky top-14 z-20 mb-5 -mx-4 flex flex-wrap items-center gap-1 border-b border-amber-200/80 bg-amber-50/85 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-amber-50/70 sm:mx-0 sm:rounded-2xl sm:border sm:px-2 sm:py-1.5 sm:shadow-sm"
     >
       {tabs.map((tab) => {
         const isActive = tab.href === activeHref
@@ -35,20 +35,22 @@ export function AdminTabs({ tabs, activeHref }: AdminTabsProps) {
             href={tab.href}
             aria-current={isActive ? "page" : undefined}
             className={cn(
-              "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+              "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all",
               isActive
-                ? "bg-amber-100 text-amber-950 shadow-sm"
-                : "text-amber-900/70 hover:bg-amber-50 hover:text-amber-950",
+                ? "bg-amber-900 text-white shadow-sm"
+                : "text-amber-900/75 hover:bg-amber-100 hover:text-amber-950",
             )}
           >
             <span>{tab.label}</span>
             {typeof tab.count === "number" ? (
               <span
                 className={cn(
-                  "inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold",
+                  "inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full px-1.5 text-[10px] font-bold tabular-nums",
                   isActive
-                    ? "bg-amber-700 text-white"
-                    : "bg-amber-100 text-amber-900",
+                    ? "bg-white text-amber-900"
+                    : tab.count > 0
+                      ? "bg-amber-200 text-amber-900"
+                      : "bg-emerald-100 text-emerald-700",
                 )}
               >
                 {tab.count}

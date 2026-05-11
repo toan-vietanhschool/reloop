@@ -65,8 +65,10 @@ interface CronResponse {
 /**
  * GET /api/cron/leaderboard
  *
- * Vercel Cron hits this hourly (see vercel.json). Recomputes the cached
- * top 20 (global view) and emits a `leaderboard_recomputed` analytics event.
+ * Vercel Cron hits this daily (see vercel.json — Hobby plan limits crons
+ * to once per day). Page-level ISR + revalidateTag keep the leaderboard
+ * fresh between recomputes. Recomputes the cached top 20 (global view)
+ * and emits a `leaderboard_recomputed` analytics event.
  *
  * Auth: requires `Authorization: Bearer ${CRON_SECRET}` header. Vercel Cron
  * automatically attaches this when the env var is configured. Manual hits

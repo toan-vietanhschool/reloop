@@ -131,10 +131,10 @@ Confirmed correct per Playbook §4.1 lines 280-283.
 
 ## Deferred to T1-07 — Status After A8-1 Audit (2026-05-09)
 
-1. Two-user RLS behavior test — **DOCUMENTED** in `docs/RLS-TEST-PLAN.md` with 12 curl-based scenarios. Requires 2 live signed-up users to execute. Cannot be run statically.
+1. Two-user RLS behavior test — **DOCUMENTED** in `docs/testing/RLS-TEST-PLAN.md` with 12 curl-based scenarios. Requires 2 live signed-up users to execute. Cannot be run statically.
 2. `is_admin()` runtime verification — **DOCUMENTED** in test plan scenario 8 (admin promotes user) and scenario 9 (admin approves listing).
 3. `profiles.role` self-escalation prevention — **RESOLVED** in 0004 (see M-4 above).
-4. Column-level protection for `moderation_passed` on listings — **RESOLVED** in 0004. NOTE: introduces CA-1 regression in `createListing()` — see `docs/RLS-AUDIT-CODE.md`.
+4. Column-level protection for `moderation_passed` on listings — **RESOLVED** in 0004. NOTE: introduces CA-1 regression in `createListing()` — see `docs/audits/RLS-AUDIT-CODE.md`.
 5. `exchanges → listings CASCADE` review — **STILL DEFERRED**. Preserving exchange history on listing removal is a product decision. Recommend SET NULL in a future migration.
 6. Rate limiting — **PARTIALLY ADDRESSED**: `/api/ai/analyze-image` has in-memory rate limit (5 req/60s/user). Other endpoints unprotected. Full solution requires Upstash Redis or Supabase Edge Function middleware.
 

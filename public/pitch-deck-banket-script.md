@@ -246,7 +246,7 @@
 | Camera điện thoại fail | *"Em chuyển sang **5 ảnh demo đã preload** trong app — flow vẫn đầy đủ."* |
 | Mic tắt | *(Vẫy tay BTC, xin 10 giây.)* |
 
-→ Chi tiết Plan B/C/D xem **`docs/DEMO-SCRIPT-BANKET.md`**.
+→ Chi tiết Plan B/C/D xem **`docs/demos/DEMO-SCRIPT-BANKET.md`**.
 
 ---
 

@@ -26,7 +26,7 @@ const nextConfig: NextConfig = {
  *   readable in the dashboard.
  * - Hides source maps from public web access (uploaded to Sentry, not served).
  * - org/project are placeholder slugs — replace with the real Sentry org and
- *   project slugs once the Sentry project is created. See docs/SENTRY-SETUP.md.
+ *   project slugs once the Sentry project is created. See docs/operations/SENTRY-SETUP.md.
  *
  * SENTRY_AUTH_TOKEN must be configured in the Vercel project env (and locally
  * in .env.local for build-time tests). Without it, source map upload is a

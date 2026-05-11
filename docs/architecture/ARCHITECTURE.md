@@ -71,13 +71,13 @@ Details: [Playbook Phần 3.6](./playbook-link)
 
 ## Key Architecture Decisions
 
-1. **Skip Stitch MCP** — Not publicly available; use v0.dev + Cursor for component scaffolding instead. See [docs/ui-tooling.md](./ui-tooling.md)
+1. **Skip Stitch MCP** — Not publicly available; use v0.dev + Cursor for component scaffolding instead. See [ui-tooling.md](../prompts/ui-tooling.md)
 
 2. **Skip Community features (Sprint 2)** — Chat, exchange, notifications deferred per team choice. See plan PHẦN F.2.
 
 3. **Use Leaflet + OpenStreetMap** — Not Google Maps. Free, privacy-respecting tiles; crowdsource-friendly schema. See [Playbook Phần 9 #3](./playbook-link)
 
-4. **RLS default-deny on all tables** — All 14 Postgres tables have row-level security policies. Unauthenticated users see zero data. See [docs/SQL-AUDIT.md](./SQL-AUDIT.md)
+4. **RLS default-deny on all tables** — All 14 Postgres tables have row-level security policies. Unauthenticated users see zero data. See [SQL-AUDIT.md](../audits/SQL-AUDIT.md)
 
 5. **No custom auth JWT signing** — Supabase Auth handles token lifecycle; we validate server-side via `getSession()`
 
@@ -85,6 +85,6 @@ Details: [Playbook Phần 3.6](./playbook-link)
 
 **Related docs:**
 - [REPO-BLUEPRINT.md](./REPO-BLUEPRINT.md) — Folder structure
-- [DEVLOG.md](./DEVLOG.md) — Daily progress
-- [CONTRIBUTING.md](../CONTRIBUTING.md) — Git + code review workflow
-- [TEST-INFRA.md](./TEST-INFRA.md) — Unit / E2E testing setup
+- [DEVLOG.md](../sprints/DEVLOG.md) — Daily progress
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) — Git + code review workflow
+- [TEST-INFRA.md](../testing/TEST-INFRA.md) — Unit / E2E testing setup

@@ -1,41 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { createServerClient, type CookieOptions } from "@supabase/ssr"
 
+import { isAppRoute, isProtected } from "@/lib/route-matchers"
 import type { Database } from "@/types/database.types"
 
 interface CookieToSet {
   name: string
   value: string
   options?: CookieOptions
-}
-
-const PROTECTED_PATTERNS: RegExp[] = [
-  /^\/dashboard(\/.*)?$/,
-  /^\/scan(\/.*)?$/,
-  /^\/listings\/new$/,
-  /^\/listings\/[^/]+\/edit$/,
-  /^\/profile(\/.*)?$/,
-  /^\/admin(\/.*)?$/,
-]
-
-// Routes where we additionally enforce banned_at. Excludes static, auth,
-// landing, and the /banned page itself so banned users can still see why.
-const APP_ROUTE_PATTERNS: RegExp[] = [
-  /^\/dashboard(\/.*)?$/,
-  /^\/scan(\/.*)?$/,
-  /^\/listings(\/.*)?$/,
-  /^\/profile(\/.*)?$/,
-  /^\/admin(\/.*)?$/,
-  /^\/leaderboard(\/.*)?$/,
-  /^\/marketplace(\/.*)?$/,
-]
-
-function isProtected(pathname: string): boolean {
-  return PROTECTED_PATTERNS.some((re) => re.test(pathname))
-}
-
-function isAppRoute(pathname: string): boolean {
-  return APP_ROUTE_PATTERNS.some((re) => re.test(pathname))
 }
 
 export async function middleware(request: NextRequest) {

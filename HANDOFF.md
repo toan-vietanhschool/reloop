@@ -16,8 +16,8 @@
 | **Supabase project** | https://supabase.com/dashboard/project/vzpwsdmlofsizhkwcpra | 14 tables, 8 migrations, 165 demo rows |
 | **Cloudflare Worker** | https://reloop.vibecode-academy.workers.dev | ⚠️ Deployed nhưng SSR 500 — upstream bug |
 | **Vercel** | _Pending — user import GitHub repo qua dashboard_ | Recommended production target |
-| **PostHog** | _User tạo project + paste DSN vào Vercel env_ | Guide: [POSTHOG-DASHBOARD.md](docs/POSTHOG-DASHBOARD.md) |
-| **Sentry** | _User tạo project + paste DSN vào Vercel env_ | Guide: [SENTRY-SETUP.md](docs/SENTRY-SETUP.md) |
+| **PostHog** | _User tạo project + paste DSN vào Vercel env_ | Guide: [POSTHOG-DASHBOARD.md](docs/operations/POSTHOG-DASHBOARD.md) |
+| **Sentry** | _User tạo project + paste DSN vào Vercel env_ | Guide: [SENTRY-SETUP.md](docs/operations/SENTRY-SETUP.md) |
 
 ---
 
@@ -25,12 +25,12 @@
 
 | # | Việc | Hướng dẫn | Effort |
 |---|---|---|---|
-| 1 | **Vercel deploy** GitHub repo | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) Option A (dashboard) | 10 phút |
+| 1 | **Vercel deploy** GitHub repo | [docs/operations/DEPLOYMENT.md](docs/operations/DEPLOYMENT.md) Option A (dashboard) | 10 phút |
 | 2 | **Add 7 env vars** vào Vercel: `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `CRON_SECRET`, `POSTHOG_WEBHOOK_SECRET`, `SENTRY_*` | Vercel dashboard → Project Settings → Environment Variables | 5 phút |
 | 3 | **Supabase Auth → URL Configuration**: thêm callback URL `https://<vercel-url>/auth/callback` | Supabase dashboard → Authentication → URL Configuration | 2 phút |
 | 4 | **Supabase Auth → Providers → Google**: enable + paste OAuth client ID/secret | Cần Google Cloud Console OAuth client (HS team có thể đã có) | 5 phút |
 | 5 | **Supabase Storage**: tạo 2 buckets `listings` + `scans` (public, 2MB) | Hoặc đợi server actions auto-create lần đầu user upload | 1 phút |
-| 6 | **2-user RLS test** thật trên prod | [docs/RLS-TEST-PLAN.md](docs/RLS-TEST-PLAN.md) — 12 scenarios curl | 15 phút |
+| 6 | **2-user RLS test** thật trên prod | [docs/testing/RLS-TEST-PLAN.md](docs/testing/RLS-TEST-PLAN.md) — 12 scenarios curl | 15 phút |
 | 7 | **DB backup snapshot** pre-final | Supabase dashboard → Settings → Database → Backups → Create | 2 phút |
 
 **Tổng manual: ~40 phút.** Sau đó production URL chạy stable, AI Vision Scan với GPT-4o-mini thật.
@@ -44,10 +44,10 @@ Print/save offline trước demo:
 | File | Use | Print? |
 |---|---|---|
 | [public/pitch-deck-banket-script.md](public/pitch-deck-banket-script.md) | Speaker script Vietnamese ~182s | Yes (A5) |
-| [docs/DEMO-SCRIPT-BANKET.md](docs/DEMO-SCRIPT-BANKET.md) | Second-by-second với Plan B/C/D/E | Yes (A5) |
-| [docs/QA-PREP.md](docs/QA-PREP.md) | 13 BGK Q&A cards với đáp án Vietnamese | Yes (cards) |
-| [docs/T-1H-CHECKLIST.md](docs/T-1H-CHECKLIST.md) | Pre-demo 1h checklist | Yes |
-| [docs/DEMO-CREDENTIALS.md](docs/DEMO-CREDENTIALS.md) | Demo accounts (gitignored) | Sticker laptop |
+| [docs/demos/DEMO-SCRIPT-BANKET.md](docs/demos/DEMO-SCRIPT-BANKET.md) | Second-by-second với Plan B/C/D/E | Yes (A5) |
+| [docs/testing/QA-PREP.md](docs/testing/QA-PREP.md) | 13 BGK Q&A cards với đáp án Vietnamese | Yes (cards) |
+| [docs/demos/T-1H-CHECKLIST.md](docs/demos/T-1H-CHECKLIST.md) | Pre-demo 1h checklist | Yes |
+| [docs/demos/DEMO-CREDENTIALS.md](docs/demos/DEMO-CREDENTIALS.md) | Demo accounts (gitignored) | Sticker laptop |
 | [public/poster-a1.md](public/poster-a1.md) | Poster A1 brief cho Figma | — |
 
 **Props mang theo:** chai nhựa thật + lon nhôm + báo cũ (3 vật liệu khác nhau để demo scan đa dạng).
@@ -60,10 +60,10 @@ Cần build lại / prototype ở platform khác? 4 master prompts đã chuẩn 
 
 | Tool | File | Use case | Words |
 |---|---|---|---|
-| **Lovable.dev** | [docs/LOVABLE-PROMPT.md](docs/LOVABLE-PROMPT.md) | **Primary** — full-stack Sprint 1+2 với Supabase native | ~4500 |
-| **Bolt.new** | [docs/BOLT-PROMPT.md](docs/BOLT-PROMPT.md) | Alternative full-stack Sprint 1 only (iterative) | ~2870 |
-| **v0.dev** | [docs/V0-PROMPT.md](docs/V0-PROMPT.md) | Design-only — 5 components (Hero / ScanCard / Podium / EcoScoreCard / ModerationTable) | ~2770 |
-| **Comparison matrix** | [docs/AI-BUILDERS-MATRIX.md](docs/AI-BUILDERS-MATRIX.md) | Decision tree + Lovable+v0+Cursor recommended workflow | ~1710 |
+| **Lovable.dev** | [docs/prompts/LOVABLE-PROMPT.md](docs/prompts/LOVABLE-PROMPT.md) | **Primary** — full-stack Sprint 1+2 với Supabase native | ~4500 |
+| **Bolt.new** | [docs/prompts/BOLT-PROMPT.md](docs/prompts/BOLT-PROMPT.md) | Alternative full-stack Sprint 1 only (iterative) | ~2870 |
+| **v0.dev** | [docs/prompts/V0-PROMPT.md](docs/prompts/V0-PROMPT.md) | Design-only — 5 components (Hero / ScanCard / Podium / EcoScoreCard / ModerationTable) | ~2770 |
+| **Comparison matrix** | [docs/prompts/AI-BUILDERS-MATRIX.md](docs/prompts/AI-BUILDERS-MATRIX.md) | Decision tree + Lovable+v0+Cursor recommended workflow | ~1710 |
 
 Recommended workflow: **v0.dev (visuals) → Lovable (full-stack) → Cursor (polish)**.
 
@@ -71,7 +71,7 @@ Recommended workflow: **v0.dev (visuals) → Lovable (full-stack) → Cursor (po
 
 ## 5 · Sprint 3 backlog (post-Bán kết)
 
-[docs/SPRINT-3-BACKLOG.md](docs/SPRINT-3-BACKLOG.md) — 22 items prioritized:
+[docs/sprints/SPRINT-3-BACKLOG.md](docs/sprints/SPRINT-3-BACKLOG.md) — 22 items prioritized:
 
 - **6 P0** trước Chung kết 30/5 (Vercel deploy verify, RLS test live, banned-user enforcement test, DB backup, Sentry alerts, OpenAI quota monitor)
 - **8 P1** nice-to-have (Lighthouse CI, E2E auth fixture, real PostHog dashboard, custom domain, etc.)
@@ -83,7 +83,7 @@ Recommended workflow: **v0.dev (visuals) → Lovable (full-stack) → Cursor (po
 
 | Issue | Severity | Workaround | Tracked |
 |---|---|---|---|
-| Cloudflare Worker SSR 500 (`ComponentMod.handler is not a function`) | HIGH | Use Vercel for production | [CLOUDFLARE-DEPLOY.md](docs/CLOUDFLARE-DEPLOY.md), upstream #1258 |
+| Cloudflare Worker SSR 500 (`ComponentMod.handler is not a function`) | HIGH | Use Vercel for production | [CLOUDFLARE-DEPLOY.md](docs/operations/CLOUDFLARE-DEPLOY.md), upstream #1258 |
 | Admin tables horizontal scroll on 375px | MEDIUM | Refactor to mobile card layout | Sprint 3 M1-M3 |
 | 4 E2E auth tests skipped (need storageState fixture) | MEDIUM | Manual auth testing on prod | Sprint 3 D6 |
 | `as never` Supabase casts (~20 occurrences) | LOW | Cleanup with typed helpers | Sprint 3 A1 |
@@ -100,7 +100,7 @@ Recommended workflow: **v0.dev (visuals) → Lovable (full-stack) → Cursor (po
 - **AI cache**: image hash sha256 dedup → 0 cost on rescans + ~$0.0005/scan first time
 - **Rubric coverage**: ~92/100 Bán kết, ~94/100 Chung kết
 
-Full diagram: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+Full diagram: [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md)
 
 ---
 

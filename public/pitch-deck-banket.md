@@ -8,7 +8,7 @@
 >
 > 1. **[`pitch-deck-banket.md`](./pitch-deck-banket.md)** — *(file này)* — outline ngắn gọn cho thiết kế slide.
 > 2. **[`pitch-deck-banket-script.md`](./pitch-deck-banket-script.md)** — **script đọc trên sân khấu**, đầy đủ lời dẫn tiếng Việt cho 5 slide + timing từng giây.
-> 3. **[`../docs/DEMO-SCRIPT-BANKET.md`](../docs/DEMO-SCRIPT-BANKET.md)** — props checklist + Plan B/C/D/E khi sự cố + tech depth keywords.
+> 3. **[`../docs/demos/DEMO-SCRIPT-BANKET.md`](../docs/demos/DEMO-SCRIPT-BANKET.md)** — props checklist + Plan B/C/D/E khi sự cố + tech depth keywords.
 >
 > File này (`pitch-deck-banket.md`) chỉ là khung **visual layout** — designer/dev đọc để build slide. Speaker đọc 2 file kia.
 

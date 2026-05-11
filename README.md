@@ -59,7 +59,7 @@ pnpm dev
 | T1-09  | Error boundaries + toasts + a11y polish            | ✅      |
 | T1-10  | Landing page (Vietnamese, eco-luxury) + demo data  | ✅      |
 
-**Status:** 10/10 issues shipped — See `docs/SPRINT-1-COMPLETE.md`  
+**Status:** 10/10 issues shipped — See `docs/sprints/SPRINT-1-COMPLETE.md`  
 **Checkpoint:** 2026-05-09 (target 16/5 14:00 UTC+7 for Bán kết submission)
 
 **Sprint 2 (Chung kết 30/5)** — **DONE** (shipped 2026-05-10 in 1 day, 4-wave parallel)
@@ -77,21 +77,21 @@ pnpm dev
 | T2-09  | Performance audit (ISR 5m, bundle analysis, prerender 12 pages) | ✅      |
 | T2-10  | Pitch deck Chung kết + Q&A prep (7 questions) + Plan B/C/D | ✅      |
 
-**Status:** 20/20 issues shipped — See `docs/SPRINT-2-COMPLETE.md`  
+**Status:** 20/20 issues shipped — See `docs/sprints/SPRINT-2-COMPLETE.md`  
 **Checkpoint:** 2026-05-10 (target 30/5 14:00 UTC+7 for Chung kết submission)
 
-**Demo URL (pending Vercel deploy):** <https://reloop-mvp.vercel.app/> — See `docs/DEPLOYMENT.md` + manual user steps in Sprint 2 report
+**Demo URL (pending Vercel deploy):** <https://reloop-mvp.vercel.app/> — See `docs/operations/DEPLOYMENT.md` + manual user steps in Sprint 2 report
 
 ## Documentation
 
 - **CHANGELOG.md** — Full release history (v0.1.0-bootstrap → v1.0.0-sprint-2) with commit mapping
-- **Sprint 1 Report** — `docs/SPRINT-1-COMPLETE.md` — 10/10 issues, RLS hardening, 92/100 rubric estimate
-- **Sprint 2 Report** — `docs/SPRINT-2-COMPLETE.md` — 10/10 issues, CI/CD + observability, 94/100 rubric estimate
-- **Sprint 3 Backlog** — `docs/SPRINT-3-BACKLOG.md` — 22 backlog items (tech debt, security, production readiness) with effort + priority
+- **Sprint 1 Report** — `docs/sprints/SPRINT-1-COMPLETE.md` — 10/10 issues, RLS hardening, 92/100 rubric estimate
+- **Sprint 2 Report** — `docs/sprints/SPRINT-2-COMPLETE.md` — 10/10 issues, CI/CD + observability, 94/100 rubric estimate
+- **Sprint 3 Backlog** — `docs/sprints/SPRINT-3-BACKLOG.md` — 22 backlog items (tech debt, security, production readiness) with effort + priority
 - **Code Review** — Deferred items + tech debt from Sprint 2 security audit
-- **SQL Audit** — `docs/SQL-AUDIT.md` — RLS coverage (14/14 tables), 7 findings fixed
-- **RLS Test Plan** — `docs/RLS-TEST-PLAN.md` — 8 test cases for profile role, exchange, notification policies
-- **Deployment** — `docs/DEPLOYMENT.md` — Vercel (primary), Cloudflare Workers (known 500 error, workaround: pin Next 15.5.x)
+- **SQL Audit** — `docs/audits/SQL-AUDIT.md` — RLS coverage (14/14 tables), 7 findings fixed
+- **RLS Test Plan** — `docs/testing/RLS-TEST-PLAN.md` — 8 test cases for profile role, exchange, notification policies
+- **Deployment** — `docs/operations/DEPLOYMENT.md` — Vercel (primary), Cloudflare Workers (known 500 error, workaround: pin Next 15.5.x)
 
 ## Resources
 

@@ -38,7 +38,7 @@ Backup must therefore be triggered manually via the Supabase Dashboard.
 
 1. Create new Supabase project `reloop-restore-test`
 2. Restore from `pre-final-2026-05-29.sql` via SQL Editor
-3. Verify row counts match `docs/BACKUP-INVENTORY.md`
+3. Verify row counts match `docs/audits/BACKUP-INVENTORY.md`
 4. Smoke test: list 5 listings, 5 collection points, 1 leaderboard query
 5. Delete the restore-test project after verification
 

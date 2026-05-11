@@ -16,7 +16,7 @@ type Profile = Database["public"]["Tables"]["profiles"]["Row"]
  *   3. Source maps resolve to readable stack frames
  *
  * NOT linked from any UI. Reach it manually at /__sentry-test.
- * Remove or keep gated before public demo. See docs/SENTRY-SETUP.md.
+ * Remove or keep gated before public demo. See docs/operations/SENTRY-SETUP.md.
  */
 export const metadata = {
   title: "Sentry sanity check — ReLoop",

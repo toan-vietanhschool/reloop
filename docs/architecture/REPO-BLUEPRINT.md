@@ -156,7 +156,8 @@ Based on playbook Phan 3.2, adjusted for 20-issue scope. Tier 2 axes chosen: Ope
 Wave 3 Agent W3-A executes these steps in order:
 
 ### Step 1 -- Bootstrap repo
-    mkdir D:eloop && git init && git branch -M main
+    mkdir D:
+eloop && git init && git branch -M main
 
 ### Step 2 -- Next.js 15 project inside existing directory
     npx create-next-app@latest . --typescript --tailwind --app --src-dir=false --import-alias @/* --no-eslint
@@ -276,7 +277,7 @@ Wave 3 Agent W3-A executes these steps in order:
 | T2-07 Sentry error tracking frontend + server | sentry.client.config.ts, sentry.server.config.ts, sentry.edge.config.ts | next.config.ts withSentryConfig wrapper, app/error.tsx Sentry.captureException, app/layout.tsx Sentry init import |
 | T2-08 Share Eco Score Card html-to-image PNG + viral push | components/profile/EcoScoreCard.tsx, lib/share.ts | app/(app)/profile/page.tsx add Share button + download handler |
 | T2-09 Performance Lighthouse audit + image optim + ISR tuning | none new files config changes only | next.config.ts image domains sizes, app/(marketing)/page.tsx revalidate=60, app/(marketing)/leaderboard/page.tsx revalidate=60, app/(app)/listings/page.tsx revalidate=30 |
-| T2-10 Pitch deck + demo script + DB backup + rehearsal | supabase/seed-demo.ts, docs/DEVLOG.md 29/5 entry | README.md final update with demo credentials + Vercel URL |
+| T2-10 Pitch deck + demo script + DB backup + rehearsal | supabase/seed-demo.ts, docs/sprints/DEVLOG.md 29/5 entry | README.md final update with demo credentials + Vercel URL |
 
 ---
 

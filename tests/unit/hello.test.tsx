@@ -10,7 +10,11 @@ import { HeroSection } from '@/components/shared/HeroSection'
 describe('HeroSection (T1-01 smoke test)', () => {
   it('renders the Shazam cho rác tagline', () => {
     render(<HeroSection />)
-    expect(screen.getByText(/Shazam cho rác/i)).toBeInTheDocument()
+    // The tagline is split across text nodes by a decorative
+    // underline span, so assert each half rather than the joined
+    // string (which getByText with a regex cannot find).
+    expect(screen.getByText(/Shazam/i)).toBeInTheDocument()
+    expect(screen.getByText(/cho rác\./i)).toBeInTheDocument()
   })
 
   it('renders the primary Bắt đầu Scan CTA', () => {

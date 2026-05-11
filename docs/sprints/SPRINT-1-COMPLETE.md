@@ -91,7 +91,7 @@ No CRITICAL or HIGH advisors. The cube/earthdistance extension warnings cleared 
 - **`OPENAI_API_KEY` not set** — AI scan and AI moderation both fall back to a deterministic stub when the key is missing. User must add via `.env.local` for live AI behavior.
 - **`SUPABASE_SERVICE_ROLE_KEY`** — must be set for `createAdminClient()` (used by points engine, moderation update, AI cache). Without it, listing moderation will silently fail. User must fetch from Supabase dashboard → Settings → API.
 - **No Vercel deployment yet** — user to connect repo via dashboard, paste env vars, and trigger first deploy.
-- **No demo accounts seeded** — RLS test plan in `docs/RLS-TEST-PLAN.md` requires 2 magic-link sign-ups before manual verification.
+- **No demo accounts seeded** — RLS test plan in `docs/testing/RLS-TEST-PLAN.md` requires 2 magic-link sign-ups before manual verification.
 - **Live UI testing** — production build verified via curl smoke only. Real-device testing on iOS/Android Safari deferred to next session.
 - **Test coverage** — unit and integration tests exist for key utilities, but full 80% threshold not yet achieved across the new server actions. Deferred to Sprint 2.
 
@@ -108,7 +108,7 @@ No CRITICAL or HIGH advisors. The cube/earthdistance extension warnings cleared 
 
 2. **Create 2 demo accounts** via http://localhost:3000/auth/login (magic link). Note their UUIDs from the Supabase Auth dashboard for the RLS test plan.
 
-3. **Run RLS test plan** (`docs/RLS-TEST-PLAN.md`) — verifies that 0004 actually blocks profile.role escalation and listings.moderation_passed self-approval.
+3. **Run RLS test plan** (`docs/testing/RLS-TEST-PLAN.md`) — verifies that 0004 actually blocks profile.role escalation and listings.moderation_passed self-approval.
 
 4. **Connect to Vercel:**
    - Go to https://vercel.com/new and import the GitHub repo

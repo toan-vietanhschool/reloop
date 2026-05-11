@@ -169,7 +169,7 @@ These features were intentionally deferred to focus on core MVP. Revisit only if
 **Sprint target:** S3-pre-CK
 
 **Details:**
-- Follow `docs/RLS-TEST-PLAN.md`
+- Follow `docs/testing/RLS-TEST-PLAN.md`
 - Create 2 real demo accounts
 - Attempt to escalate role to 'admin' via UPDATE
 - Verify UPDATE fails (403)
@@ -195,7 +195,7 @@ These features were intentionally deferred to focus on core MVP. Revisit only if
 
 ### C-3: RLS test plan full execution
 
-**Why:** `docs/RLS-TEST-PLAN.md` exists but not yet run against production schema.
+**Why:** `docs/testing/RLS-TEST-PLAN.md` exists but not yet run against production schema.
 
 **Effort:** M (2–3 hours)  
 **Priority:** P0  
@@ -334,7 +334,7 @@ These features were intentionally deferred to focus on core MVP. Revisit only if
 - Create new project "ReLoop Production"
 - Copy API keys
 - Set `NEXT_PUBLIC_POSTHOG_KEY` + `POSTHOG_API_KEY` in Vercel
-- Import 3 dashboards from `docs/POSTHOG-DASHBOARD.md`:
+- Import 3 dashboards from `docs/operations/POSTHOG-DASHBOARD.md`:
   - Overview (weekly active users, top events)
   - User Behavior (funnel: auth → listing → scan → points)
   - Admin Activity (moderation actions, ban count)

@@ -13,14 +13,23 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
-      // Only files that have unit tests today — server actions, route
-      // handlers, and pages run under integration/E2E coverage instead.
-      // As we add more vitest specs, expand this list to keep the 80%
-      // threshold meaningful rather than blocking CI on untested files.
+      // Files with direct unit-test coverage today. Server actions,
+      // route handlers, and pages are covered by integration / E2E and
+      // intentionally stay outside this list so v8 doesn't dilute the
+      // numbers. Expand alongside new specs in tests/unit/.
       include: [
-        'lib/share.ts',
-        'lib/utils.ts',
         'components/shared/HeroSection.tsx',
+        'lib/format-relative.ts',
+        'lib/map-utils.ts',
+        'lib/material.ts',
+        'lib/points.ts',
+        'lib/route-matchers.ts',
+        'lib/scan-display.ts',
+        'lib/sentry-helpers.ts',
+        'lib/share.ts',
+        'lib/timing-safe-compare.ts',
+        'lib/utils.ts',
+        'lib/validators/**/*.ts',
       ],
       exclude: [
         'node_modules/**',
@@ -30,14 +39,13 @@ export default defineConfig({
         '.next/**',
         '.open-next/**',
       ],
-      // Pragmatic thresholds set to the current tested baseline.
-      // TODO: ratchet back to 80% once unit tests cover share.ts capture
-      // helpers and additional lib modules; tracked in test-coverage debt.
+      // Thresholds reflect the current tested baseline. Ratchet upward
+      // alongside new specs — these must never loosen.
       thresholds: {
         branches: 80,
-        functions: 60,
-        lines: 40,
-        statements: 40,
+        functions: 80,
+        lines: 80,
+        statements: 80,
       },
     },
   },

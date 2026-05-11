@@ -119,7 +119,7 @@ Route (app)                Revalidate  Expire
 > Both were already applied to the DB (Supabase tracks by name not order),
 > so the rename is purely cosmetic and DOES NOT require re-applying.
 
-Database state at Sprint 2 SHIP — see `docs/BACKUP-INVENTORY.md`:
+Database state at Sprint 2 SHIP — see `docs/audits/BACKUP-INVENTORY.md`:
 - 15 public tables, all RLS-enabled
 - 165 total rows (10 profiles, 30 listings, 25 collection points, 50 eco_actions,
   16 material_categories, 16 material_info, 5 badges, 13 schools)
@@ -150,7 +150,7 @@ Database state at Sprint 2 SHIP — see `docs/BACKUP-INVENTORY.md`:
    - Set Authorized redirect URI: `https://[your-vercel-domain]/auth/callback`
    - Add `[your-vercel-domain]` to Site URL
 
-4. **Run final RLS test plan** (`docs/RLS-TEST-PLAN.md`) on production DB:
+4. **Run final RLS test plan** (`docs/testing/RLS-TEST-PLAN.md`) on production DB:
    - Verify 0004 blocks role escalation
    - Verify 0008 blocks banned user listings
    - Verify 0009 admin audit log captures all admin actions
@@ -168,13 +168,13 @@ Database state at Sprint 2 SHIP — see `docs/BACKUP-INVENTORY.md`:
    - Trigger test error via `/sentry-test` route → verify in Sentry dashboard
 
 7. **Trigger DB backup:**
-   - Per `docs/BACKUP-PROOF.md`, create snapshot `pre-final-2026-05-29`
+   - Per `docs/audits/BACKUP-PROOF.md`, create snapshot `pre-final-2026-05-29`
    - Save screenshot proof
    - Optional: `pg_dump` to local file (DO NOT commit)
 
 ### Final (T-1d before 16/5)
 
-8. **Run T-1H checklist** (`docs/T-1H-CHECKLIST.md`) — practice script + plan B/C/D
+8. **Run T-1H checklist** (`docs/demos/T-1H-CHECKLIST.md`) — practice script + plan B/C/D
 9. **Practice pitch deck 5 times** with timer
 10. **Test 5 backup videos** preload (Plan B/C/D)
 11. **Print poster A1** (50 bulk + 200 mini A4 + 500 sticker QR)

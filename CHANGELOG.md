@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Sprint 3 backlog items (tech debt, security hardening, production readiness)
-- Post-Bán kết phase planned (see `docs/SPRINT-3-BACKLOG.md`)
+- Post-Bán kết phase planned (see `docs/sprints/SPRINT-3-BACKLOG.md`)
 
 ---
 
@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sentry CRON monitoring (errors during daily leaderboard refresh)
 
 ### Known Issues
-- **Cloudflare Workers 500 error** — `@opennextjs/cloudflare@1.19.8` + Next 16 incompatibility (opennextjs/opennextjs-cloudflare#1258). Workaround: pin Next.js 15.5.x. Worker builds successfully but all dynamic routes fail at runtime (TypeError: components.ComponentMod.handler is not a function). See `docs/CLOUDFLARE-DEPLOY.md`.
+- **Cloudflare Workers 500 error** — `@opennextjs/cloudflare@1.19.8` + Next 16 incompatibility (opennextjs/opennextjs-cloudflare#1258). Workaround: pin Next.js 15.5.x. Worker builds successfully but all dynamic routes fail at runtime (TypeError: components.ComponentMod.handler is not a function). See `docs/operations/CLOUDFLARE-DEPLOY.md`.
 
 ### Rubric Coverage
 - **Bán kết 16/5**: ~92/100 (top 1 reachable) — Live URL pending Vercel deploy, demo data seeded, RLS production-grade

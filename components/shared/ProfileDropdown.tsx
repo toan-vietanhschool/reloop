@@ -58,13 +58,13 @@ export function ProfileDropdown({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-2 py-1 text-sm font-medium shadow-sm transition-all hover:border-emerald-300 hover:bg-emerald-50/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+        className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-2.5 py-1 text-sm font-medium shadow-card transition-all hover:border-lime hover:shadow-card-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-lime"
         aria-label="User menu"
         aria-expanded={open}
         aria-haspopup="menu"
       >
         <span
-          className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 text-xs font-bold text-emerald-800"
+          className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-navy text-xs font-bold text-white"
           aria-hidden
         >
           {avatarUrl ? (
@@ -86,10 +86,10 @@ export function ProfileDropdown({
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-60 rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-lg ring-1 ring-black/5"
+          className="absolute right-0 z-50 mt-2 w-60 rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-dropdown"
         >
           {ecoPoints !== undefined && (
-            <div className="flex items-center gap-2 rounded-lg bg-emerald-50/60 px-3 py-2 sm:hidden">
+            <div className="flex items-center gap-2 rounded-lg bg-fill px-3 py-2 sm:hidden">
               <UserBadge ecoPoints={ecoPoints} />
             </div>
           )}
@@ -101,7 +101,7 @@ export function ProfileDropdown({
                 href={link.href}
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-emerald-50/60"
+                className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-fill"
               >
                 {link.label}
               </Link>
@@ -112,7 +112,7 @@ export function ProfileDropdown({
             href="/profile"
             role="menuitem"
             onClick={() => setOpen(false)}
-            className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-emerald-50/60"
+            className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-fill"
           >
             Hồ sơ
           </Link>
@@ -120,7 +120,7 @@ export function ProfileDropdown({
             href="/dashboard"
             role="menuitem"
             onClick={() => setOpen(false)}
-            className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-emerald-50/60"
+            className="block rounded-lg px-3 py-2 text-sm transition-colors hover:bg-fill"
           >
             Dashboard
           </Link>

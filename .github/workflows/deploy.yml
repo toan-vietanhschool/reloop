@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
 
-# Chi 1 deploy chay tai 1 thoi diem
+# Chỉ 1 deploy chạy tại 1 thời điểm
 concurrency:
   group: deploy-production
   cancel-in-progress: true
@@ -14,7 +14,7 @@ env:
   PNPM_VERSION: '10'
 
 jobs:
-  # Cho CI pass truoc khi deploy
+  # Chờ CI pass trước khi deploy
   ci:
     uses: ./.github/workflows/ci.yml
 
@@ -69,4 +69,3 @@ jobs:
       - name: Notify on failure
         if: failure()
         run: echo "::error::Deploy to VPS failed! Check logs above."
-

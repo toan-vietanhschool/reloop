@@ -26,8 +26,8 @@ export function HeroCta({
 }: HeroCtaProps) {
   const className =
     variant === "primary"
-      ? "h-12 rounded-full bg-white px-7 text-base font-semibold text-brand-green-deep shadow-lg shadow-black/15 transition hover:bg-white/95 hover:shadow-xl"
-      : "h-12 rounded-full border-white/60 bg-white/0 px-7 text-base font-semibold text-white backdrop-blur transition hover:bg-white/15 hover:text-white"
+      ? "h-12 rounded-full bg-lime px-7 text-base font-semibold text-navy shadow-brand transition hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]"
+      : "h-12 rounded-full border border-white/40 bg-transparent px-7 text-base font-semibold text-white transition hover:bg-white/10 hover:border-white/60"
 
   return (
     <Button

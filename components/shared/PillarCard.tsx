@@ -18,14 +18,14 @@ interface PillarCardProps {
 }
 
 const accentClasses: Record<NonNullable<PillarCardProps["accent"]>, string> = {
-  green: "bg-brand-green/15 text-brand-green-deep ring-brand-green/30",
-  blue: "bg-brand-blue/15 text-brand-blue-deep ring-brand-blue/30",
+  green: "bg-lime/15 text-lime-deep ring-lime/30",
+  blue: "bg-navy-light/15 text-navy ring-navy-light/30",
   amber: "bg-amber-500/15 text-amber-700 ring-amber-500/30",
 }
 
 const accentBadge: Record<NonNullable<PillarCardProps["accent"]>, string> = {
-  green: "text-brand-green-deep",
-  blue: "text-brand-blue-deep",
+  green: "text-lime-deep",
+  blue: "text-navy",
   amber: "text-amber-700",
 }
 
@@ -51,7 +51,7 @@ export function PillarCard({
     <Wrapper
       {...(wrapperProps as { href: string })}
       className={cn(
-        "group relative isolate flex h-full flex-col justify-end overflow-hidden rounded-3xl border border-foreground/8 bg-card shadow-sm transition duration-300 hover:-translate-y-1 hover:border-foreground/15 hover:shadow-soft-lg",
+        "group relative isolate flex h-full flex-col justify-end overflow-hidden rounded-2xl border border-border bg-card shadow-card transition duration-400 hover:-translate-y-1 hover:border-lime/30 hover:shadow-card-hover",
         isFeature
           ? "min-h-[22rem] md:col-span-2 md:min-h-[26rem]"
           : "min-h-[18rem] md:min-h-[20rem]",

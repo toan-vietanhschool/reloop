@@ -10,7 +10,9 @@ import { HeroSection } from '@/components/shared/HeroSection'
 describe('HeroSection (T1-01 smoke test)', () => {
   it('renders the Shazam cho rác tagline', () => {
     render(<HeroSection />)
-    expect(screen.getByText(/Shazam cho rác/i)).toBeInTheDocument()
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading).toHaveTextContent(/Shazam/i)
+    expect(heading).toHaveTextContent(/cho rác/i)
   })
 
   it('renders the primary Bắt đầu Scan CTA', () => {
@@ -18,3 +20,4 @@ describe('HeroSection (T1-01 smoke test)', () => {
     expect(screen.getByText(/Bắt đầu Scan/i)).toBeInTheDocument()
   })
 })
+

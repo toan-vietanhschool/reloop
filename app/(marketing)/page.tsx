@@ -73,15 +73,15 @@ export default function MarketingHome() {
       >
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
           <div className="mb-10 flex flex-col gap-3 md:mb-14 md:max-w-3xl">
-            <span className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-green-deep">
-              Ba trụ cột
+            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-lime-deep">
+              Giải pháp
             </span>
             <h2
               id="pillars-heading"
-              className="font-display text-balance text-3xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
+              className="font-display text-balance text-3xl font-black uppercase leading-[0.95] tracking-tight text-navy sm:text-4xl md:text-5xl lg:text-6xl"
             >
               Một nền tảng.{" "}
-              <span className="text-brand-green-deep">
+              <span className="text-lime-deep">
                 Toàn bộ vòng đời rác.
               </span>
             </h2>
@@ -120,23 +120,19 @@ export default function MarketingHome() {
       {/* How it works — horizontal timeline desktop, vertical mobile */}
       <section
         aria-labelledby="how-it-works-heading"
-        className="relative isolate bg-eco-bg-soft"
+        className="relative isolate bg-fill"
       >
-        <div
-          aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-mesh opacity-50"
-        />
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
           <div className="mb-12 flex flex-col gap-3 md:mb-16 md:max-w-2xl">
-            <span className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-blue-deep">
+            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-navy-light">
               Cách hoạt động
             </span>
             <h2
               id="how-it-works-heading"
-              className="font-display text-balance text-3xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
+              className="font-display text-balance text-3xl font-black uppercase leading-[0.95] tracking-tight text-navy sm:text-4xl md:text-5xl lg:text-6xl"
             >
               Ba bước.{" "}
-              <span className="text-brand-blue-deep">Dưới 10 giây.</span>
+              <span className="text-lime-deep">Dưới 10 giây.</span>
             </h2>
           </div>
 
@@ -144,7 +140,7 @@ export default function MarketingHome() {
             {/* Connecting line — desktop only */}
             <div
               aria-hidden
-              className="absolute left-0 right-0 top-[44px] hidden h-px bg-gradient-to-r from-brand-green/0 via-brand-green/40 to-brand-blue/0 md:block"
+              className="absolute left-0 right-0 top-[44px] hidden h-px bg-gradient-to-r from-lime/0 via-lime/40 to-navy-light/0 md:block"
             />
 
             {steps.map((step, idx) => (
@@ -155,21 +151,21 @@ export default function MarketingHome() {
                 {/* Dot marker on the timeline */}
                 <div className="flex items-center gap-3">
                   <span
-                    className="relative grid h-[88px] w-[88px] place-items-center rounded-full border border-foreground/10 bg-card shadow-soft-lg md:h-[88px]"
+                    className="relative grid h-[88px] w-[88px] place-items-center rounded-2xl border border-border bg-card shadow-card md:h-[88px]"
                     aria-hidden
                   >
                     <step.icon
-                      className="h-7 w-7 text-brand-green-deep"
+                      className="h-7 w-7 text-navy"
                       strokeWidth={1.75}
                     />
-                    <span className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full bg-brand-green text-xs font-bold text-white shadow-brand">
+                    <span className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full bg-lime text-xs font-bold text-navy shadow-brand">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <span className="font-display text-sm font-semibold uppercase tracking-[0.16em] text-brand-green-deep/70">
+                  <span className="font-display text-sm font-semibold uppercase tracking-[0.12em] text-lime-deep/70">
                     Bước {String(idx + 1).padStart(2, "0")}
                   </span>
                   <h3 className="font-display text-xl font-semibold leading-snug text-foreground md:text-2xl">
@@ -192,12 +188,12 @@ export default function MarketingHome() {
       >
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
           <div className="mb-10 flex flex-col gap-3 md:mb-14 md:max-w-2xl">
-            <span className="text-sm font-semibold uppercase tracking-[0.18em] text-destructive">
+            <span className="text-xs font-semibold uppercase tracking-[0.12em] text-destructive">
               Vì sao quan trọng
             </span>
             <h2
               id="stats-heading"
-              className="font-display text-balance text-3xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
+              className="font-display text-balance text-3xl font-black uppercase leading-[0.95] tracking-tight text-navy sm:text-4xl md:text-5xl lg:text-6xl"
             >
               Việt Nam đang bị nhấn chìm{" "}
               <span className="text-destructive">trong rác.</span>

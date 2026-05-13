@@ -16,8 +16,8 @@ interface StatBlockProps {
 }
 
 const emphasisClasses: Record<NonNullable<StatBlockProps["emphasis"]>, string> = {
-  green: "text-brand-green-deep",
-  blue: "text-brand-blue-deep",
+  green: "text-lime-deep",
+  blue: "text-navy-light",
   danger: "text-destructive",
 }
 
@@ -107,7 +107,7 @@ export function StatBlock({
   return (
     <div
       ref={ref}
-      className="group relative flex flex-col gap-3 overflow-hidden rounded-3xl border border-foreground/8 bg-card p-7 text-left transition hover:border-foreground/15 hover:shadow-soft-lg md:p-9"
+      className="group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-border bg-card p-7 text-left shadow-card transition hover:border-lime/30 hover:shadow-card-hover md:p-9"
     >
       {/* Subtle accent corner */}
       <div

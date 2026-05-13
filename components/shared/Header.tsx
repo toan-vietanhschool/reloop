@@ -20,19 +20,19 @@ export function Header({ profile }: HeaderProps) {
   const initials = getInitials(displayName)
 
   return (
-    <header className="sticky top-0 z-[500] w-full border-b border-border/60 bg-background/75 backdrop-blur-md supports-[backdrop-filter]:bg-background/55">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4">
+    <header className="sticky top-0 z-[500] w-full border-b border-border bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-10">
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 text-base font-bold tracking-tight transition-opacity hover:opacity-80"
+          className="flex items-center gap-2.5 font-bold tracking-tight text-navy transition-opacity hover:opacity-80"
         >
           <span
             aria-hidden
-            className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm"
+            className="flex h-9 w-9 items-center justify-center rounded-lg bg-navy text-white shadow-sm"
           >
-            🌱
+            ♻️
           </span>
-          <span>ReLoop</span>
+          <span className="font-display text-lg font-bold uppercase tracking-tight">ReLoop</span>
         </Link>
 
         <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
@@ -40,7 +40,7 @@ export function Header({ profile }: HeaderProps) {
             <Link
               key={link.href}
               href={link.href}
-              className="group relative inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-emerald-50/60 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="group relative inline-flex h-9 items-center rounded-lg px-3.5 text-sm font-medium text-foreground/70 transition-colors hover:bg-fill hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-lime"
             >
               {link.label}
             </Link>

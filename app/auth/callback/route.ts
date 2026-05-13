@@ -3,8 +3,15 @@ import { NextResponse, type NextRequest } from "next/server"
 import { trackServer } from "@/lib/analytics-server"
 import { createClient } from "@/lib/supabase/server"
 
+function getOrigin(request: NextRequest): string {
+  const proto = request.headers.get("x-forwarded-proto") || "https"
+  const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || "sev7n.xyz"
+  return `${proto}://${host}`
+}
+
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
+  const origin = getOrigin(request)
   const code = searchParams.get("code")
   const next = searchParams.get("next") ?? "/dashboard"
   const errorDescription = searchParams.get("error_description")
@@ -30,8 +37,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(failure)
   }
 
-  // signup_completed: server-side fire on first OAuth code exchange.
-  // Best-effort — never blocks the redirect.
   const sessionUser = exchanged?.user
   if (sessionUser) {
     const provider = sessionUser.app_metadata?.provider ?? "unknown"
